@@ -48,22 +48,11 @@
                     if (valid) {
 
                         let data = this.dimension;
-
-                        //axios.post("/api/crear/dimension", data).then((response) => {
-                        //    this.success();
-                        //    console.log(response.data);
-                        //}).catch((response) => {
-                        //    this.error(response)//;
-                        //})
-
-
                         this.$http.post('/api/crear/dimension', data).then((response) => {
                             this.success();
                         }, (response) => {
                             console.log(response)
                         });
-
-
                     } else {
 
                         return false;

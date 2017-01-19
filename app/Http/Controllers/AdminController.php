@@ -30,6 +30,13 @@ class AdminController extends Controller
         //
     }
 
+
+    public function initLoad()
+    {
+        $dimensiones = Dimension::with('getRequisitos')->get();
+        return response()->json($dimensiones, 200);
+    }
+
     /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -74,7 +81,7 @@ class AdminController extends Controller
      */
     public function show($id)
     {
-        //
+
     }
 
     /**
