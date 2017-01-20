@@ -2,47 +2,89 @@
     <div>
         <div class="row">
             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
 
-                    <h3 class="text-center">Dimensiones</h3>
-                    <div v-for="(value, key, index) in data">
-                        <el-submenu :index="(key + 1).toString()">
-                            <template slot="title">{{value.dimension}}</template>
-                            <el-submenu :index="(llave + 1).toString()"
-                                        v-for="(names, llave, index) in value.get_requisitos">
-                                <template slot="title">
-                                    <p v-if="names.nombreRequisito.length > 1">
-                                        {{names.nombreRequisito}}
-                                    </p>
-                                </template>
-                            </el-submenu>
+
+                <el-menu class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
+                    <h3 class="text-center"><b>Dimensiones</b></h3>
+                    <hr>
+                    <div v-for="dimensiones in data">
+                        <el-submenu :index="(dimensiones.ordenDimension).toString()">
+                            <template slot="title">{{dimensiones.dimension | truncate }}</template>
+                            <h4 class="text-center"><b>Requisitos</b></h4>
+                            <hr>
+                            <div v-for="requisitos in dimensiones.get_requisitos">
+                                <el-submenu
+                                        :index="(((dimensiones.ordenDimension).toString())-((requisitos.ordenRequisito).toString())).toString()">
+                                    <template slot="title">{{requisitos.nombreRequisito | truncate}}</template>
+                                    <h5 class="text-center"><b>Preguntas</b></h5>
+                                    <hr>
+                                    <div v-for="preguntas in requisitos.get_preguntas">
+
+                                        <el-menu-item
+                                                :index="(((dimensiones.ordenDimension).toString())-((requisitos.ordenRequisito).toString())-((preguntas.ordenPreguntas).toString())).toString()">
+                                            {{preguntas.pregunta | truncate}}
+                                        </el-menu-item>
+                                    </div>
+
+                                </el-submenu>
+                            </div>
+
+
                         </el-submenu>
                     </div>
+
+
                 </el-menu>
+                <!--
+                 <div v-for="dimensiones in data">
+                    <h1 style="color : purple">{{dimensiones.dimension}}</h1>
+
+
+                    <ul v-for="requisitos in dimensiones.get_requisitos">
+                        <li style="color : red">
+                            {{requisitos.nombreRequisito}}
+                        </li>
+
+                        <ul v-for="preguntas in requisitos.get_preguntas">
+                            <li style="color : green">
+                                {{preguntas.pregunta}}
+                            </li>
+                        </ul>
+
+                    </ul>
+
+                </div>
+                -->
+
+
             </div>
         </div>
 
-        <el-dialog title="Agregar una nueva dimension" v-model="dimensionDialogVisible" size="small">
-            <el-form url=" " :model="dimension" class="" :rules="rules" ref="dimension" method="POST">
+        <el-dialog title="Agregar una nueva dimension" v-model="dimensionDialogVisible"
+                   size="small">
+            <el-form :model="dimension" class="" :rules="rules" ref="dimension">
                 <el-form-item label="Nombre de la dimension" prop="nombreDimension">
                     <el-input v-model="dimension.nombreDimension"></el-input>
                 </el-form-item>
 
                 <el-form-item>
-                    <el-button type="primary" @click="dimensionSubmit('dimension')" class="pull-right">Agregar
+                    <el-button type="primary" @click="dimensionSubmit('dimension')"
+                               class="pull-right">Agregar
                     </el-button>
                 </el-form-item>
             </el-form>
         </el-dialog>
 
 
-        <el-dialog title="Agregar un nuevo requisito" v-model="requisitosDialogVisible" size="small">
-            <el-form url=" " :model="requisitos" class="" :rules="rules" ref="requisitos" method="POST">
+        <el-dialog title="Agregar un nuevo requisito" v-model="requisitosDialogVisible"
+                   size="small">
+            <el-form :model="requisitos" class="" :rules="rules" ref="requisitos">
                 <el-form-item label="Nombre del Requisito" prop="nombreRequisito">
                     <el-input v-model="requisitos.nombreRequisito"></el-input>
                 </el-form-item>
                 <el-form-item label="Dimension del requisito" prop="idDimension">
-                    <el-select v-model="requisitos.idDimension" placeholder="Elija una" style="width: 100%">
+                    <el-select v-model="requisitos.idDimension" placeholder="Elija una"
+                               style="width: 100%">
                         <el-option
                                 v-for="item in data"
                                 :label="item.dimension"
@@ -53,7 +95,8 @@
 
 
                 <el-form-item>
-                    <el-button type="primary" @click="requisitoSubmit('requisitos')" class="pull-right">Agregar
+                    <el-button type="primary" @click="requisitoSubmit('requisitos')"
+                               class="pull-right">Agregar
                     </el-button>
                 </el-form-item>
             </el-form>
@@ -61,18 +104,19 @@
 
 
         <el-dialog title="Agregar una nueva pregunta" v-model="preguntasDialogVisible" size="large">
-            <el-form url=" " :model="preguntas" class="" :rules="rules" ref="preguntas" method="POST">
+            <el-form :model="pregunta" class="" :rules="rules" ref="preguntas">
 
 
-                <el-form-item label="Nombre de la pregunta" prop="nombrePregunta">
-                    <el-input v-model="pregunta.nombreRequisito"></el-input>
+                <el-form-item label="Nombre de la pregunta" prop="pregunta">
+                    <el-input v-model="pregunta.pregunta"></el-input>
                 </el-form-item>
 
 
-                <el-form-item label="Nombre del requisito" prop="idDimension">
-                    <el-select v-model="pregunta.idRequisito" placeholder="Elija una" style="width: 100%">
+                <el-form-item label="Nombre del requisito" prop="idRequisito">
+                    <el-select v-model="pregunta.idRequisito" placeholder="Elija una"
+                               style="width: 100%">
                         <el-option
-                                v-for="item in data.get_requisitos"
+                                v-for="item in dataRequisitos"
                                 :label="item.nombreRequisito"
                                 :value="item.id">
                         </el-option>
@@ -95,19 +139,23 @@
 
                 <br>
 
-                <el-form-item label="Observacion Numeral" prop="idDimension">
-                    <el-switch on-text="SI" off-text="NO" v-model="pregunta.tipoObservacion.numeral"></el-switch>
+                <el-form-item label="Observacion Numeral">
+                    <el-switch on-text="SI" off-text="NO"
+                               v-model="pregunta.numeral"></el-switch>
                 </el-form-item>
 
-                <el-form-item label="Observacion escrita" prop="idDimension">
-                    <el-switch on-text="SI" off-text="NO" v-model="pregunta.tipoObservacion.escrita"></el-switch>
+                <el-form-item label="Observacion Escrita">
+                    <el-switch on-text="SI" off-text="NO"
+                               v-model="pregunta.escrita"></el-switch>
                 </el-form-item>
 
-                <el-form-item label="Observacion documental" prop="idDimension">
-                    <el-switch on-text="SI" off-text="NO" v-model="pregunta.tipoObservacion.documental"></el-switch>
+                <el-form-item label="Observacion Documental">
+                    <el-switch on-text="SI" off-text="NO"
+                               v-model="pregunta.documental"></el-switch>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="requisitoSubmit('requisitos')" class="pull-right">Agregar
+                    <el-button type="primary" @click="preguntaSubmit('preguntas')"
+                               class="pull-right">Agregar
                     </el-button>
                 </el-form-item>
             </el-form>
@@ -147,9 +195,8 @@
     }
 </style>
 <script>
-    import createDimension from './modulos/createDimension.vue'
-    import createRequisito from './modulos/createRequisito.vue'
-    import createPregunta from './modulos/createPregunta.vue'
+
+
     export default{
         name: 'admin',
         mounted(){
@@ -157,7 +204,14 @@
         },
         data(){
             return {
-                data: '',
+                data: [],
+                dimensionTree: [],
+                defaultProps: {
+                    dimension: 'dimension',
+                    id: 'id'
+                },
+
+                dataRequisitos: '',
                 dimension: {
                     nombreDimension: ''
                 },
@@ -168,11 +222,10 @@
                 pregunta: {
                     pregunta: '',
                     idRequisito: '',
-                    tipoObservacion: {
-                        numeral: false,
-                        escrita: false,
-                        documental: false,
-                    }
+                    numeral: false,
+                    escrita: false,
+                    documental: false,
+
                 },
                 rules: {
                     nombreDimension: [
@@ -200,6 +253,23 @@
                             trigger: 'change',
                             type: 'integer'
                         }
+                    ],
+                    pregunta: [
+                        {required: true, message: 'Por favor escriba algo', trigger: 'blur'},
+                        {
+                            min: 10,
+                            max: 500,
+                            message: 'Min. de caracteres : 10. MAx. de caracteres 500',
+                            trigger: 'blur'
+                        }
+                    ],
+                    idRequisito: [
+                        {
+                            required: true,
+                            message: 'Por favor seleccione un requisito',
+                            trigger: 'change',
+                            type: 'integer'
+                        }
                     ]
 
 
@@ -215,11 +285,21 @@
 
             initLoad(){
                 this.$http.get('/api/carga/inicial').then((response) => {
-                    this.data = response.data;
+                    let data = response.data;
+                    this.data = data;
+
+                    let arr = [];
+                    Object.keys(data).forEach((item) => {
+                        data[item].get_requisitos.forEach((item, index) => {
+                            arr.push(item);
+                        })
+                    });
+                    this.dataRequisitos = arr;
                 }, (response) => {
 
                 })
             },
+
 
             dimensionSubmit(formName){
                 this.$refs[formName].validate((valid) => {
@@ -258,6 +338,30 @@
                     }
                 })
             },
+            preguntaSubmit(formName){
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let data = this.pregunta;
+                        this.$http.post('/api/crear/pregunta', data).then((response) => {
+
+                            console.log(response.data)
+
+                            this.pregunta.pregunta = '';
+                            this.pregunta.idRequisito = '';
+                            this.pregunta.escrita = false;
+                            this.pregunta.numeral = false;
+                            this.pregunta.documental = false;
+                            this.preguntasDialogVisible = false;
+                            this.initLoad();
+                            this.success();
+                        }, (response) => {
+                            this.error(response);
+                        });
+                    } else {
+                        return false;
+                    }
+                })
+            },
             create(){
 
             },
@@ -284,6 +388,13 @@
 
 
         },
+
+        filters: {
+            truncate: function (value) {
+                return value.substring(0, 30) + '...';
+            }
+        }
+
 
     }
 

@@ -16,9 +16,12 @@ class CreatePreguntasTable extends Migration
         Schema::create('preguntas', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('idRequisito');
+            $table->integer('ordenPreguntas');
             $table->foreign('idRequisito')->references('id')->on('requisitos');
             $table->longText('pregunta');
-            $table->enum('tipoObservacion', ['numeral', 'escrita', 'documental', 'todas'])->default('todas');
+            $table->boolean('escrita');
+            $table->boolean('numeral');
+            $table->boolean('documental');
             $table->boolean('estado');
             $table->timestamps();
         });

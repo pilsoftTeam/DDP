@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Dimension;
+use App\Pregunta;
 use App\Requisito;
 use Illuminate\Http\Request;
 
@@ -89,6 +90,44 @@ class AdminController extends Controller
         $requisito->save();
 
         return response()->json(200);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createPregunta(Request $request)
+    {
+
+        $ordenPregunta = Pregunta::orderBy('created_at', 'desc')->value('ordenPreguntas');
+        $pregunta = new Pregunta();
+
+        if (!$ordenPregunta) {
+            $pregunta->idRequisito = $request->idRequisito;
+            $pregunta->ordenPreguntas = 1;
+            $pregunta->pregunta = $request->pregunta;
+            $pregunta->escrita = $request->escrita;
+            $pregunta->numeral = $request->numeral;
+            $pregunta->documental = $request->documental;
+            $pregunta->estado = false;
+            $pregunta->save();
+
+            return response()->json(200);
+
+        }
+
+        $pregunta->idRequisito = $request->idRequisito;
+        $pregunta->ordenPreguntas = $ordenPregunta + 1;
+        $pregunta->pregunta = $request->pregunta;
+        $pregunta->escrita = $request->escrita;
+        $pregunta->numeral = $request->numeral;
+        $pregunta->documental = $request->documental;
+        $pregunta->estado = false;
+        $pregunta->save();
+
+        return response()->json(200);
+
+
     }
 
     /**

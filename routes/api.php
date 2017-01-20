@@ -25,4 +25,5 @@ Route::group(['middleware' => 'auth:api'], function () {
     //Crear dimensiones
     Route::post('/crear/dimension', 'AdminController@createDimension');
     Route::post('/crear/requisito', 'AdminController@createRequisito');
+    Route::post('/crear/pregunta', 'AdminController@createPregunta');
 });
