@@ -13,4 +13,9 @@ class Requisito extends Model
     {
         return $this->hasMany('App\Pregunta', 'idRequisito', 'id');
     }
+
+    public function obtenerDimensiones()
+    {
+        return $this->belongsTo('App\Dimension', 'idDimension', 'id');
+    }
 }

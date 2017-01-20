@@ -13,165 +13,156 @@
                             <h4 class="text-center"><b>Requisitos</b></h4>
                             <hr>
                             <div v-for="requisitos in dimensiones.get_requisitos">
-                                <el-submenu
-                                        :index="(((dimensiones.ordenDimension).toString())-((requisitos.ordenRequisito).toString())).toString()">
-                                    <template slot="title">{{requisitos.nombreRequisito | truncate}}</template>
-                                    <h5 class="text-center"><b>Preguntas</b></h5>
-                                    <hr>
-                                    <div v-for="preguntas in requisitos.get_preguntas">
+                                <el-menu-item :index="(requisitos.ordenRequisito).toString()">
+                                    <p @click="getPreguntas(requisitos.id)">{{requisitos.nombreRequisito |
+                                        truncate}}</p>
+                                </el-menu-item>
+                            </div>
+                        </el-submenu>
+                    </div>
+                </el-menu>
+            </div>
+            <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div v-for="pregunta in dataPreguntas">
 
-                                        <el-menu-item
-                                                :index="(((dimensiones.ordenDimension).toString())-((requisitos.ordenRequisito).toString())-((preguntas.ordenPreguntas).toString())).toString()">
-                                            {{preguntas.pregunta | truncate}}
-                                        </el-menu-item>
-                                    </div>
 
-                                </el-submenu>
+                            {{pregunta.pregunta}}
+
+                            <div v-for="requisitosPregunta in pregunta.obtener_requisitos">
+                                <p>{{requisitoPregunta.nombreRequisito}}</p>
+                                <!--
+                                <div v-for="dimension in requisito.obtener_dimensiones">
+                                    <p>dimension.dimension</p>
+                                </div>
+                                -->
+
                             </div>
 
 
-                        </el-submenu>
+                        </div>
                     </div>
-
-
-                </el-menu>
-                <!--
-                 <div v-for="dimensiones in data">
-                    <h1 style="color : purple">{{dimensiones.dimension}}</h1>
-
-
-                    <ul v-for="requisitos in dimensiones.get_requisitos">
-                        <li style="color : red">
-                            {{requisitos.nombreRequisito}}
-                        </li>
-
-                        <ul v-for="preguntas in requisitos.get_preguntas">
-                            <li style="color : green">
-                                {{preguntas.pregunta}}
-                            </li>
-                        </ul>
-
-                    </ul>
-
                 </div>
-                -->
-
-
             </div>
+
         </div>
 
-        <el-dialog title="Agregar una nueva dimension" v-model="dimensionDialogVisible"
-                   size="small">
-            <el-form :model="dimension" class="" :rules="rules" ref="dimension">
-                <el-form-item label="Nombre de la dimension" prop="nombreDimension">
-                    <el-input v-model="dimension.nombreDimension"></el-input>
-                </el-form-item>
 
-                <el-form-item>
-                    <el-button type="primary" @click="dimensionSubmit('dimension')"
-                               class="pull-right">Agregar
-                    </el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
+        <div>
+            <el-dialog title="Agregar una nueva dimension" v-model="dimensionDialogVisible"
+                       size="small">
+                <el-form :model="dimension" class="" :rules="rules" ref="dimension">
+                    <el-form-item label="Nombre de la dimension" prop="nombreDimension">
+                        <el-input v-model="dimension.nombreDimension"></el-input>
+                    </el-form-item>
 
-
-        <el-dialog title="Agregar un nuevo requisito" v-model="requisitosDialogVisible"
-                   size="small">
-            <el-form :model="requisitos" class="" :rules="rules" ref="requisitos">
-                <el-form-item label="Nombre del Requisito" prop="nombreRequisito">
-                    <el-input v-model="requisitos.nombreRequisito"></el-input>
-                </el-form-item>
-                <el-form-item label="Dimension del requisito" prop="idDimension">
-                    <el-select v-model="requisitos.idDimension" placeholder="Elija una"
-                               style="width: 100%">
-                        <el-option
-                                v-for="item in data"
-                                :label="item.dimension"
-                                :value="item.id">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="dimensionSubmit('dimension')"
+                                   class="pull-right">Agregar
+                        </el-button>
+                    </el-form-item>
+                </el-form>
+            </el-dialog>
 
 
-                <el-form-item>
-                    <el-button type="primary" @click="requisitoSubmit('requisitos')"
-                               class="pull-right">Agregar
-                    </el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
+            <el-dialog title="Agregar un nuevo requisito" v-model="requisitosDialogVisible"
+                       size="small">
+                <el-form :model="requisitos" class="" :rules="rules" ref="requisitos">
+                    <el-form-item label="Nombre del Requisito" prop="nombreRequisito">
+                        <el-input v-model="requisitos.nombreRequisito"></el-input>
+                    </el-form-item>
+                    <el-form-item label="Dimension del requisito" prop="idDimension">
+                        <el-select v-model="requisitos.idDimension" placeholder="Elija una"
+                                   style="width: 100%">
+                            <el-option
+                                    v-for="item in data"
+                                    :label="item.dimension"
+                                    :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
 
 
-        <el-dialog title="Agregar una nueva pregunta" v-model="preguntasDialogVisible" size="large">
-            <el-form :model="pregunta" class="" :rules="rules" ref="preguntas">
+                    <el-form-item>
+                        <el-button type="primary" @click="requisitoSubmit('requisitos')"
+                                   class="pull-right">Agregar
+                        </el-button>
+                    </el-form-item>
+                </el-form>
+            </el-dialog>
 
 
-                <el-form-item label="Nombre de la pregunta" prop="pregunta">
-                    <el-input v-model="pregunta.pregunta"></el-input>
-                </el-form-item>
+            <el-dialog title="Agregar una nueva pregunta" v-model="preguntasDialogVisible" size="large">
+                <el-form :model="pregunta" class="" :rules="rules" ref="preguntas">
 
 
-                <el-form-item label="Nombre del requisito" prop="idRequisito">
-                    <el-select v-model="pregunta.idRequisito" placeholder="Elija una"
-                               style="width: 100%">
-                        <el-option
-                                v-for="item in dataRequisitos"
-                                :label="item.nombreRequisito"
-                                :value="item.id">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-
-                <el-alert
-                        title="Informacion"
-                        type="info"
-                        description="Al elejir una de estas opciones usted otorgara a la pregunta una revision. Elija cuidadosamente"
-                        show-icon
-                        @close="showDocumentalHeader = true">
-                </el-alert>
-                <div v-if="showDocumentalHeader">
-                    <hr>
-                    <h5>
-                        <b>Tipos de observacion a agregar</b>
-                    </h5>
-                </div>
-
-                <br>
-
-                <el-form-item label="Observacion Numeral">
-                    <el-switch on-text="SI" off-text="NO"
-                               v-model="pregunta.numeral"></el-switch>
-                </el-form-item>
-
-                <el-form-item label="Observacion Escrita">
-                    <el-switch on-text="SI" off-text="NO"
-                               v-model="pregunta.escrita"></el-switch>
-                </el-form-item>
-
-                <el-form-item label="Observacion Documental">
-                    <el-switch on-text="SI" off-text="NO"
-                               v-model="pregunta.documental"></el-switch>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="preguntaSubmit('preguntas')"
-                               class="pull-right">Agregar
-                    </el-button>
-                </el-form-item>
-            </el-form>
-        </el-dialog>
+                    <el-form-item label="Nombre de la pregunta" prop="pregunta">
+                        <el-input v-model="pregunta.pregunta"></el-input>
+                    </el-form-item>
 
 
-        <div class="btn-group" id="fixedbutton">
-            <button type="button" class="btn btn-success" @click="dimensionDialogVisible = true">
-                Dimension
-            </button>
-            <button type="button" class="btn btn-info" @click="requisitosDialogVisible = true">
-                Requisito
-            </button>
-            <button type="button" class="btn btn-primary" @click="preguntasDialogVisible = true">
-                Pregunta
-            </button>
+                    <el-form-item label="Nombre del requisito" prop="idRequisito">
+                        <el-select v-model="pregunta.idRequisito" placeholder="Elija una"
+                                   style="width: 100%">
+                            <el-option
+                                    v-for="item in dataRequisitos"
+                                    :label="item.nombreRequisito"
+                                    :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <el-alert
+                            title="Informacion"
+                            type="info"
+                            description="Al elejir una de estas opciones usted otorgara a la pregunta una revision. Elija cuidadosamente"
+                            show-icon
+                            @close="showDocumentalHeader = true">
+                    </el-alert>
+                    <div v-if="showDocumentalHeader">
+                        <hr>
+                        <h5>
+                            <b>Tipos de observacion a agregar</b>
+                        </h5>
+                    </div>
+
+                    <br>
+
+                    <el-form-item label="Observacion Numeral">
+                        <el-switch on-text="SI" off-text="NO"
+                                   v-model="pregunta.numeral"></el-switch>
+                    </el-form-item>
+
+                    <el-form-item label="Observacion Escrita">
+                        <el-switch on-text="SI" off-text="NO"
+                                   v-model="pregunta.escrita"></el-switch>
+                    </el-form-item>
+
+                    <el-form-item label="Observacion Documental">
+                        <el-switch on-text="SI" off-text="NO"
+                                   v-model="pregunta.documental"></el-switch>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="preguntaSubmit('preguntas')"
+                                   class="pull-right">Agregar
+                        </el-button>
+                    </el-form-item>
+                </el-form>
+            </el-dialog>
+
+
+            <div class="btn-group" id="fixedbutton">
+                <button type="button" class="btn btn-success" @click="dimensionDialogVisible = true">
+                    Dimension
+                </button>
+                <button type="button" class="btn btn-info" @click="requisitosDialogVisible = true">
+                    Requisito
+                </button>
+                <button type="button" class="btn btn-primary" @click="preguntasDialogVisible = true">
+                    Pregunta
+                </button>
+            </div>
         </div>
 
 
@@ -196,7 +187,6 @@
 </style>
 <script>
 
-
     export default{
         name: 'admin',
         mounted(){
@@ -204,14 +194,9 @@
         },
         data(){
             return {
-                data: [],
-                dimensionTree: [],
-                defaultProps: {
-                    dimension: 'dimension',
-                    id: 'id'
-                },
-
+                data: '',
                 dataRequisitos: '',
+                dataPreguntas: '',
                 dimension: {
                     nombreDimension: ''
                 },
@@ -373,6 +358,15 @@
 
             },
 
+
+            getPreguntas(id){
+                this.$http.get('/api/obtener/preguntas/' + id + '').then((response) => {
+                    this.dataPreguntas = response.data;
+                }, (response) => {
+                    this.error(response.status);
+                })
+            },
+
             success(){
                 this.$notify.success({
                     title: 'Exito',
@@ -388,6 +382,9 @@
 
 
         },
+
+        computed: {},
+
 
         filters: {
             truncate: function (value) {

@@ -130,6 +130,13 @@ class AdminController extends Controller
 
     }
 
+    public function getPreguntas($id)
+    {
+        $preguntas = Pregunta::where('idRequisito', $id)->orderBy('ordenPreguntas', 'asc')->with('obtenerRequisitos')->get();
+
+        return response()->json($preguntas, 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
