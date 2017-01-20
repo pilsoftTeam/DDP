@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Dimension;
+use App\Requisito;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -52,20 +53,48 @@ class AdminController extends Controller
             $dimension->dimension = $request->nombreDimension;
             $dimension->estado = false;
             $dimension->save();
-            return response()->json('Exito', 200);
+            return response()->json(200);
         }
 
         $dimension->ordenDimension = $ordenDimension + 1;
         $dimension->dimension = $request->nombreDimension;
         $dimension->estado = false;
         $dimension->save();
-        return response()->json($ordenDimension, 200);
+        return response()->json(200);
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createRequisito(Request $request)
+    {
+        $ordenRequisito = Requisito::orderBy('created_at', 'desc')->value('ordenRequisito');
+        $requisito = new Requisito();
+
+
+        if (!$ordenRequisito) {
+            $requisito->ordenRequisito = 1;
+            $requisito->idDimension = $request->idDimension;
+            $requisito->NombreRequisito = $request->nombreRequisito;
+            $requisito->estado = false;
+            $requisito->save();
+            return response()->json(200);
+        }
+
+        $requisito->ordenRequisito = $ordenRequisito + 1;
+        $requisito->idDimension = $request->idDimension;
+        $requisito->NombreRequisito = $request->nombreRequisito;
+        $requisito->estado = false;
+        $requisito->save();
+
+        return response()->json(200);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -98,7 +127,7 @@ class AdminController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  Request $request
      * @param  int $id
      * @return \Illuminate\Http\Response
      */

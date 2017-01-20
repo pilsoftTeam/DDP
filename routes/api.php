@@ -20,6 +20,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     Route::get('/carga/inicial', 'AdminController@initLoad');
+
+
     //Crear dimensiones
     Route::post('/crear/dimension', 'AdminController@createDimension');
+    Route::post('/crear/requisito', 'AdminController@createRequisito');
 });

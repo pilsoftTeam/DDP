@@ -18,7 +18,7 @@ class CreateRequisitosTable extends Migration
             $table->integer('ordenRequisito');
             $table->unsignedInteger('idDimension');
             $table->foreign('idDimension')->references('id')->on('dimensiones');
-            $table->longText('Nombrerequisito');
+            $table->longText('nombreRequisito');
             $table->boolean('estado');
             $table->timestamps();
         });
