@@ -19,6 +19,7 @@ class CreatePreguntasTable extends Migration
             $table->integer('ordenPreguntas');
             $table->foreign('idRequisito')->references('id')->on('requisitos');
             $table->longText('pregunta');
+            $table->longText('tecnicaAuditoria');
             $table->boolean('escrita');
             $table->boolean('numeral');
             $table->boolean('documental');

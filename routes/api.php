@@ -31,4 +31,10 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::get('/obtener/preguntas/{id}', 'AdminController@getPreguntas');
 
+
+    //Usuarios
+
+    Route::get('/obtener/usuarios', 'AdminController@getUsuarios');
+    Route::get('/obtener/roles', 'AdminController@getRoles');
+
 });

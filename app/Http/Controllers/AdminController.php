@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Dimension;
+use App\Perfiles;
 use App\Pregunta;
 use App\Requisito;
+use App\User;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -21,17 +23,6 @@ class AdminController extends Controller
     {
         return view('modulos/admin');
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
 
     public function initLoad()
     {
@@ -106,6 +97,7 @@ class AdminController extends Controller
             $pregunta->idRequisito = $request->idRequisito;
             $pregunta->ordenPreguntas = 1;
             $pregunta->pregunta = $request->pregunta;
+            $pregunta->tecnicaAuditoria = $request->tecnicaAuditoria;
             $pregunta->escrita = $request->escrita;
             $pregunta->numeral = $request->numeral;
             $pregunta->documental = $request->documental;
@@ -119,6 +111,7 @@ class AdminController extends Controller
         $pregunta->idRequisito = $request->idRequisito;
         $pregunta->ordenPreguntas = $ordenPregunta + 1;
         $pregunta->pregunta = $request->pregunta;
+        $pregunta->tecnicaAuditoria = $request->tecnicaAuditoria;
         $pregunta->escrita = $request->escrita;
         $pregunta->numeral = $request->numeral;
         $pregunta->documental = $request->documental;
@@ -137,59 +130,21 @@ class AdminController extends Controller
         return response()->json($preguntas, 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function getUsuarios()
     {
+        $usuarios = User::with('getPerfil')->get();
+
+        return response()->json($usuarios);
+
 
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function getRoles()
     {
-        //
+        $roles = Perfiles::all();
+        return response()->json($roles);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  Request $request
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
