@@ -1,19 +1,22 @@
 <template>
     <div>
-        <el-tabs type="border-card" @tab-click="openEvent">
-            <el-tab-pane>
-                <span slot="label"> <icon name="list-alt"></icon>&nbsp; Cuestionarios</span>
-                <div v-if="showCuestionarios">
-                    <cuestionario></cuestionario>
-                </div>
-            </el-tab-pane>
-            <el-tab-pane>
-                <span slot="label"> <icon name="users"></icon> &nbsp;Usuarios</span>
-                <div v-if="showUsuarios">
-                    <usuarios></usuarios>
-                </div>
-            </el-tab-pane>
-        </el-tabs>
+        <div class="container">
+            <el-tabs type="border-card" @tab-click="openEvent">
+                <el-tab-pane>
+                    <span slot="label"> <icon name="list-alt"></icon>&nbsp; Cuestionarios</span>
+                    <div v-if="showCuestionarios">
+                        <cuestionario></cuestionario>
+                    </div>
+                </el-tab-pane>
+                <el-tab-pane>
+                    <span slot="label"> <icon name="users"></icon> &nbsp;Usuarios</span>
+                    <div v-if="showUsuarios">
+                        <usuarios></usuarios>
+                    </div>
+                </el-tab-pane>
+            </el-tabs>
+
+        </div>
 
     </div>
 

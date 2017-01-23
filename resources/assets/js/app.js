@@ -18,7 +18,8 @@ import 'element-ui/lib/theme-default/index.css';
 Vue.use(ElementUI, {locale});
 
 
-Vue.component('example', require('./components/index.vue'));
+Vue.component('revisor', require('./components/index.vue'));
+Vue.component('supervisor', require('./components/supervisor/index.vue'));
 Vue.component('admin', require('./components/admin/index.vue'));
 
 

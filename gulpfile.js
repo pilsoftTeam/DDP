@@ -31,5 +31,6 @@ elixir(mix => {
     });
 
     mix.sass('app.scss')
-       .webpack('app.js');
+        .styles(['animate.css'])
+        .webpack('app.js');
 });

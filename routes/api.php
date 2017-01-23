@@ -26,9 +26,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/crear/dimension', 'AdminController@createDimension');
     Route::post('/crear/requisito', 'AdminController@createRequisito');
     Route::post('/crear/pregunta', 'AdminController@createPregunta');
-
     //Traer Preguntas
-
     Route::get('/obtener/preguntas/{id}', 'AdminController@getPreguntas');
 
 
@@ -36,5 +34,12 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::get('/obtener/usuarios', 'AdminController@getUsuarios');
     Route::get('/obtener/roles', 'AdminController@getRoles');
+
+
+    //Crear usuario
+
+    Route::post('/crear/usuario', 'AdminController@createUser');
+    Route::post('/editar/usuario', 'AdminController@editUser');
+    Route::post('/borrar/usuario', 'AdminController@deleteUser');
 
 });

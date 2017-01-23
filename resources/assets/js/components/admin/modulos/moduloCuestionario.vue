@@ -294,7 +294,7 @@
             </el-dialog>
 
 
-            <div class="btn-group" id="fixedbutton">
+            <div class="btn-group fixedbutton">
                 <button type="button" class="btn btn-success" @click="dimensionDialogVisible = true">
                     Dimension
                 </button>
@@ -311,8 +311,8 @@
     </div>
 </template>
 
-<style>
-    #fixedbutton {
+<style scoped>
+    .fixedbutton {
         position: fixed;
         bottom: 5px;
         right: 5px;

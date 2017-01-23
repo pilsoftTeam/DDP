@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Dimension;
+use App\Http\Requests\UserCreationRequest;
+use App\Perfilamiento;
 use App\Perfiles;
 use App\Pregunta;
 use App\Requisito;
@@ -10,6 +12,7 @@ use App\User;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -73,7 +76,6 @@ class AdminController extends Controller
             $requisito->save();
             return response()->json(200);
         }
-
         $requisito->ordenRequisito = $ordenRequisito + 1;
         $requisito->idDimension = $request->idDimension;
         $requisito->NombreRequisito = $request->nombreRequisito;
@@ -133,7 +135,7 @@ class AdminController extends Controller
 
     public function getUsuarios()
     {
-        $usuarios = User::with('getPerfil')->get();
+        $usuarios = User::where('id', '!=', Auth::user()->id)->with('getPerfil')->get();
 
         return response()->json($usuarios);
 
@@ -144,6 +146,47 @@ class AdminController extends Controller
     {
         $roles = Perfiles::all();
         return response()->json($roles);
+    }
+
+
+    public function createUser(UserCreationRequest $request)
+    {
+        $user = new User();
+        $perfilamiento = new Perfilamiento();
+        $password = str_random(12);
+
+        $user->name = $request->nombre;
+        $user->email = $request->email;
+        $user->password = bcrypt($password);
+        $user->save();
+
+        $perfilamiento->idPerfil = $request->rol;
+        $perfilamiento->idUsuario = $user->id;
+        $perfilamiento->save();
+
+        return response()->json($password, 200);
+
+    }
+
+    public function editUser(Request $request)
+    {
+        User::where('id', $request->id)->update([
+            'name' => $request->nombre,
+            'email' => $request->email,
+        ]);
+
+        Perfilamiento::where('idUsuario', $request->id)->update([
+            'idPerfil' => $request->rol
+        ]);
+
+        return response()->json(200);
+    }
+
+    public function deleteUser(Request $request)
+    {
+        Perfilamiento::where('idUsuario', $request->id)->delete();
+        User::destroy($request->id);
+        return response()->json(200);
     }
 
 
