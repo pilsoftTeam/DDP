@@ -42,4 +42,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/editar/usuario', 'AdminController@editUser');
     Route::post('/borrar/usuario', 'AdminController@deleteUser');
 
+
+    Route::post('/recibir/archivos', 'CuestionarioController@files');
+
+
 });

@@ -11,6 +11,7 @@
 |
 */
 
+
 Route::get('/', function () {
     if (!Auth::User()) {
         return view('auth.login');
@@ -21,4 +22,3 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/inicio', 'HomeController@index');
-Route::get('/admin/', 'AdminController@index');

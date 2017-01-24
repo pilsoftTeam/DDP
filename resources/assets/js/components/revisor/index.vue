@@ -1,6 +1,6 @@
 <template>
     <div>
-
+        <button class="btn btn-lg btn-success" @click="sendDocs">PROBAR</button>
         <div class="row" v-for="item in dimensionLayer">
 
             <div v-if="item.estado">
@@ -82,14 +82,14 @@
                         <el-upload
                                 style="margin: 0 auto"
                                 class="center center-block"
-                                action="//jsonplaceholder.typicode.com/posts/"
+                                action="http://localhost/api/recibir/archivos"
+                                :headers="headers"
                                 type="drag"
                                 :multiple="true"
                                 :on-preview="handlePreview"
                                 :on-remove="handleRemove"
                                 :on-success="handleSuccess"
-                                :on-error="handleError"
-                                :default-file-list="fileList">
+                                :on-error="handleError">
                             <i class="el-icon-upload"></i>
                             <div class="el-dragger__text">Arrastre aqui o <em>haga click para subir archivos</em></div>
                             <div class="el-upload__tip" slot="tip">Considerar que sean menor a 500kb</div>
@@ -139,7 +139,7 @@
 
 </style>
 <script>
-
+    let readBlob = require('read-blob');
     export default{
 
         mounted(){
@@ -150,23 +150,21 @@
                 initialization: '',
                 dimensionLayer: [],
                 preguntasLayer: {
-
                     nombreRequisito: '',
                     preguntas: ''
                 },
-                fileList: [],
-
+                archivos: [],
                 final: [],
-
                 active: 1,
                 radio: '',
-
-
                 showObs: {
                     numeral: false,
                     escrita: false,
                     documental: false
 
+                },
+                headers: {
+                    'X-CSRF-TOKEN': Laravel.csrfToken
                 },
                 observacionDialogVisible: false
             }
@@ -201,10 +199,6 @@
                 this.preguntasLayer.preguntas = preguntas;
             },
             addObservaciones(escrita, numeral, documental){
-                console.log(escrita);
-                console.log(numeral);
-                console.log(documental);
-
                 this.showObs.escrita = escrita == 1;
                 this.showObs.numeral = numeral == 1;
                 this.showObs.documental = documental == 1;
@@ -219,12 +213,51 @@
                 console.log(res);
             },
 
-            handleSuccess(file){
-                console.log(file)
+
+            sendDocs(){
+                let fileList = this.archivos;
+                this.$http.post('/api/receive/docs', fileList).then((response) => {
+                    console.log(response.data)
+                }, (response) => {
+                    console.log(response)
+                })
             },
-            handleError(file){
-                console.log(file)
+
+
+            handlePreview(a, file){
+
             },
+
+            handleRemove(a, file){
+
+            },
+            handleSuccess(res, file){
+                let self = this;
+                let obj = {
+                    name: '',
+                    file: ''
+                };
+                Object.keys(file).forEach(function (item, index) {
+                    console.log(item + ':' + file[item]);
+                });
+                //self.archivos.push(obj);
+
+
+            },
+            handleError(res, file){
+
+            },
+
+            analyze(url){
+                let reader = new FileReader();
+
+                reader.onload = function (e) {
+                    console.log(reader.result)
+                };
+
+                reader.readAsBinaryString(url);
+
+            }
 
         },
 
