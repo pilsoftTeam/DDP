@@ -19,6 +19,7 @@ class CreatePerfilamientosTable extends Migration
             $table->foreign('idPerfil')->references('id')->on('perfiles');
             $table->unsignedInteger('idUsuario');
             $table->foreign('idUsuario')->references('id')->on('usuarios');
+            $table->enum('estado', ['activo', 'inactivo'])->default('activo');
             $table->timestamps();
         });
     }

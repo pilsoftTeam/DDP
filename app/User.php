@@ -35,4 +35,8 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\Perfilamiento', 'idUsuario', 'id')->with('getNombrePerfil');
     }
+
+    public function getAsignaciones(){
+        return $this->hasMany('App\Asignacion', 'idUsuarioAsignado', 'id');
+    }
 }

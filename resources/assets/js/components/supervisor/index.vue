@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <div>Hola supervisor</div>
+        <supervisor-tabs></supervisor-tabs>
 
     </div>
 </template>
@@ -9,15 +9,15 @@
 
 </style>
 <script>
-
+    import supervisorTabs from './modulos/supervisorTabs.vue'
     export default{
         data(){
-            return{
-                msg:'hello vue'
+            return {
+                msg: 'hello vue'
             }
         },
-        components:{
-
+        components: {
+            'supervisor-tabs': supervisorTabs
         }
     }
 </script>

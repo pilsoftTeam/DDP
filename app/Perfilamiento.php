@@ -13,4 +13,11 @@ class Perfilamiento extends Model
     {
         return $this->belongsTo('App\Perfiles', 'idPerfil', 'id');
     }
+
+    public function getUsuario()
+    {
+        return $this->hasOne('App\User', 'id', 'idUsuario')->with('getAsignaciones');
+    }
+
+
 }

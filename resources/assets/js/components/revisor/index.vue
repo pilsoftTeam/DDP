@@ -1,6 +1,5 @@
 <template>
     <div>
-        <button class="btn btn-lg btn-success" @click="sendDocs">PROBAR</button>
         <div class="row" v-for="item in dimensionLayer">
 
             <div v-if="item.estado">
@@ -40,10 +39,28 @@
                                             </small>
                                             <br>
                                             <br>
-                                            <button class="btn btn-xs btn-info"
-                                                    @click="addObservaciones(preguntas.escrita, preguntas.numeral, preguntas.documental)">
-                                                Añadir observaciones
-                                            </button>
+
+                                            <div class="row">
+                                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"
+                                                     v-if="preguntas.escrita != 0">
+                                                    <el-input
+                                                            type="textarea"
+                                                            :rows="2"
+                                                            placeholder="Please input">
+                                                    </el-input>
+                                                </div>
+                                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"
+                                                     v-if="preguntas.numeral != 0">
+                                                    <el-input-number size="small"></el-input-number>
+                                                </div>
+                                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"
+                                                     v-if="preguntas.documental != 0">
+                                                    <button class="btn btn-xs btn-info"
+                                                            @click="addObservaciones()">
+                                                        Añadir observaciones
+                                                    </button>
+                                                </div>
+                                            </div>
                                             <hr>
                                         </div>
                                         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
@@ -55,12 +72,9 @@
                                                     No cumple
                                                 </el-radio>
                                             </el-radio-group>
-
                                         </div>
                                     </div>
-
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -77,53 +91,32 @@
 
         <el-dialog title="Observaciones" v-model="observacionDialogVisible" size="large">
             <div class="row">
-                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                    <div v-if="showObs.documental">
-                        <el-upload
-                                style="margin: 0 auto"
-                                class="center center-block"
-                                action="http://localhost/api/recibir/archivos"
-                                :headers="headers"
-                                type="drag"
-                                :multiple="true"
-                                :on-preview="handlePreview"
-                                :on-remove="handleRemove"
-                                :on-success="handleSuccess"
-                                :on-error="handleError">
-                            <i class="el-icon-upload"></i>
-                            <div class="el-dragger__text">Arrastre aqui o <em>haga click para subir archivos</em></div>
-                            <div class="el-upload__tip" slot="tip">Considerar que sean menor a 500kb</div>
-                        </el-upload>
-                    </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <el-upload
+                            style="margin: 0 auto"
+                            class="center center-block"
+                            action="http://localhost/api/recibir/archivos"
+                            type="drag"
+                            :headers="headers"
+                            :multiple="true"
+                            :on-preview="handlePreview"
+                            :on-remove="handleRemove"
+                            :on-success="handleSuccess"
+                            :on-error="handleError">
+                        <i class="el-icon-upload"></i>
+                        <div class="el-dragger__text">Arrastre aqui o <em>haga click para subir archivos</em></div>
+                        <div class="el-upload__tip" slot="tip">Considerar que sean menor a 500kb</div>
+                    </el-upload>
                 </div>
-                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                    <div class="row">
-
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div v-if="showObs.escrita">
-                                <el-input
-                                        type="textarea"
-                                        :rows="2"
-                                        placeholder="Please input"
-                                >
-                                </el-input>
-                            </div>
-                        </div>
-
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div v-if="showObs.numeral">
-                                <el-input-number size="large"></el-input-number>
-                            </div>
-
-                        </div>
-
-                    </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <h5>Previsualización</h5>
+                    <img :src="selectedImg" class="img img-rounded img-responsive"
+                         style="margin: 0 auto; max-height: 400px;max-width: 400px">
                 </div>
-
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="observacionDialogVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="observacionDialogVisible = false">Confirm</el-button>
+                <el-button @click="observacionDialogVisible = false">Cancelar</el-button>
+                <el-button type="primary" @click="observacionDialogVisible = false">Confirmar</el-button>
               </span>
         </el-dialog>
     </div>
@@ -139,7 +132,6 @@
 
 </style>
 <script>
-    let readBlob = require('read-blob');
     export default{
 
         mounted(){
@@ -157,16 +149,11 @@
                 final: [],
                 active: 1,
                 radio: '',
-                showObs: {
-                    numeral: false,
-                    escrita: false,
-                    documental: false
-
-                },
                 headers: {
                     'X-CSRF-TOKEN': Laravel.csrfToken
                 },
-                observacionDialogVisible: false
+                observacionDialogVisible: false,
+                selectedImg: ''
             }
         },
 
@@ -198,10 +185,7 @@
                 this.preguntasLayer.nombreRequisito = nombreRequisito;
                 this.preguntasLayer.preguntas = preguntas;
             },
-            addObservaciones(escrita, numeral, documental){
-                this.showObs.escrita = escrita == 1;
-                this.showObs.numeral = numeral == 1;
-                this.showObs.documental = documental == 1;
+            addObservaciones(){
                 this.observacionDialogVisible = true;
             },
 
@@ -224,7 +208,13 @@
             },
 
 
-            handlePreview(a, file){
+            handlePreview(file){
+                //this.selectedImg = file.url;
+
+
+                this.$http.get(file.url).then((response) => {
+
+                })
 
             },
 
@@ -247,17 +237,6 @@
             handleError(res, file){
 
             },
-
-            analyze(url){
-                let reader = new FileReader();
-
-                reader.onload = function (e) {
-                    console.log(reader.result)
-                };
-
-                reader.readAsBinaryString(url);
-
-            }
 
         },
 

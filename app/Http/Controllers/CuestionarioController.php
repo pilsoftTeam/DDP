@@ -13,10 +13,7 @@ class CuestionarioController extends Controller
 {
     public function files(Request $request)
     {
-        //$img = Image::make($request[0]['file']);
-
-        //Storage::put('image.jpg', file_get_contents($request->files));
-        dd($request);
+        return response()->json($request);
 
     }
 }
