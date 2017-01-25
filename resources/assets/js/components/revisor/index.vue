@@ -1,5 +1,6 @@
 <template>
     <div>
+        <button @click="assignForms">ASS</button>
         <div class="row" v-for="item in dimensionLayer">
 
             <div v-if="item.estado">
@@ -41,25 +42,35 @@
                                             <br>
 
                                             <div class="row">
-                                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"
-                                                     v-if="preguntas.escrita != 0">
-                                                    <el-input
-                                                            type="textarea"
-                                                            :rows="2"
-                                                            placeholder="Please input">
-                                                    </el-input>
-                                                </div>
-                                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"
+
+                                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
                                                      v-if="preguntas.numeral != 0">
-                                                    <el-input-number size="small"></el-input-number>
+                                                    <el-input-number
+                                                            class="fullWidth"
+                                                            v-model="final.aa"
+                                                            size="small"
+                                                    ></el-input-number>
                                                 </div>
-                                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"
+                                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
                                                      v-if="preguntas.documental != 0">
-                                                    <button class="btn btn-xs btn-info"
-                                                            @click="addObservaciones()">
+                                                    <button class="btn btn-xs btn-info btn-block"
+                                                            @click="addObservaciones(preguntas.id)">
                                                         Añadir observaciones
                                                     </button>
                                                 </div>
+
+
+                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
+                                                     v-if="preguntas.escrita != 0">
+                                                    <el-input
+                                                            v-model="final.azo"
+                                                            type="textarea"
+                                                            :rows="2"
+                                                            placeholder="Agregue una observacion">
+                                                    </el-input>
+                                                </div>
+
+
                                             </div>
                                             <hr>
                                         </div>
@@ -91,37 +102,62 @@
 
         <el-dialog title="Observaciones" v-model="observacionDialogVisible" size="large">
             <div class="row">
-                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 ">
                     <el-upload
-                            style="margin: 0 auto"
-                            class="center center-block"
-                            action="http://localhost/api/recibir/archivos"
+                            class="centerable center center-block"
+                            action="//localhost/api/recibir/archivos"
+                            name="documentos"
                             type="drag"
-                            :headers="headers"
+                            :data="subirArchivo"
                             :multiple="true"
+                            :headers="headers"
+                            :before-upload="beforeUpload"
                             :on-preview="handlePreview"
                             :on-remove="handleRemove"
                             :on-success="handleSuccess"
-                            :on-error="handleError">
+                            :on-error="handleError"
+                            :default-file-list="fileList">
                         <i class="el-icon-upload"></i>
-                        <div class="el-dragger__text">Arrastre aqui o <em>haga click para subir archivos</em></div>
-                        <div class="el-upload__tip" slot="tip">Considerar que sean menor a 500kb</div>
+                        <div class="el-dragger__text">Arrastre archivos hasta aca o , <em>Toque aqui para subir</em>
+                        </div>
+                        <div class="el-upload__tip" slot="tip"></div>
                     </el-upload>
                 </div>
-                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <h5>Previsualización</h5>
-                    <img :src="selectedImg" class="img img-rounded img-responsive"
-                         style="margin: 0 auto; max-height: 400px;max-width: 400px">
+                <h5>Previsualización</h5>
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 borderRight">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <img :src="selectedImg.img" class="img img-rounded img-responsive"
+                                 style="margin: 0 auto; max-height: 200px;max-width: 200px">
+                            <hr>
+                            <br>
+                            <h4 class="text-center">{{selectedImg.name}}</h4>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="observacionDialogVisible = false">Cancelar</el-button>
-                <el-button type="primary" @click="observacionDialogVisible = false">Confirmar</el-button>
+                <el-button type="primary" @click="hideUpload">Confirmar</el-button>
               </span>
         </el-dialog>
     </div>
 </template>
 <style>
+    .centerable {
+        margin: 0 auto;
+    }
+
+    .borderLeft {
+        border-left: 1px solid black;
+    }
+
+    .borderRight {
+        border-left: 1px solid #F5F8FA;
+        height: 300px;
+    }
+
     .selectable:hover {
         cursor: pointer;
     }
@@ -130,30 +166,44 @@
         display: none;
     }
 
+    .fullWidth {
+        width: 100%;
+    }
+
 </style>
 <script>
+    import _ from 'lodash'
     export default{
 
         mounted(){
             this.init();
+
         },
         data(){
             return {
                 initialization: '',
                 dimensionLayer: [],
+                active: 1,
+                radio: '',
+                observacionDialogVisible: false,
+                fileList: [],
                 preguntasLayer: {
                     nombreRequisito: '',
                     preguntas: ''
                 },
-                archivos: [],
-                final: [],
-                active: 1,
-                radio: '',
+                selectedImg: {
+                    img: '',
+                    name: ''
+                },
+                subirArchivo: {
+                    idPregunta: '',
+                    data: '',
+                },
                 headers: {
                     'X-CSRF-TOKEN': Laravel.csrfToken
                 },
-                observacionDialogVisible: false,
-                selectedImg: ''
+
+                final: [],
             }
         },
 
@@ -162,10 +212,9 @@
         },
 
         methods: {
-
             init(){
                 this.$http.get('api/carga/inicial').then((response) => {
-
+                    this.initialization = response.data;
                     let data = response.data;
                     let self = this;
                     Object.keys(data).forEach((key, index) => {
@@ -179,67 +228,94 @@
                     console.log(response.data);
                 })
             },
-
             showPreguntas(nombreRequisito, preguntas){
 
                 this.preguntasLayer.nombreRequisito = nombreRequisito;
                 this.preguntasLayer.preguntas = preguntas;
             },
-            addObservaciones(){
+            addObservaciones(id){
+                this.subirArchivo.idPregunta = id;
                 this.observacionDialogVisible = true;
             },
-
 
             next() {
                 if (this.active++ > 2) this.active = 0;
             },
             crearRespuesta(res){
-                console.log(res);
+                console.log(this);
             },
 
-
-            sendDocs(){
-                let fileList = this.archivos;
-                this.$http.post('/api/receive/docs', fileList).then((response) => {
-                    console.log(response.data)
-                }, (response) => {
-                    console.log(response)
-                })
+            beforeUpload(file){
+                this.subirArchivo.data = this.data.idOficinaAsignada;
             },
-
-
-            handlePreview(file){
-                //this.selectedImg = file.url;
-
-
-                this.$http.get(file.url).then((response) => {
-
-                })
+            handleSuccess(){
 
             },
-
-            handleRemove(a, file){
+            handleError(){
 
             },
-            handleSuccess(res, file){
+            handlePreview(file, fileList){
+                this.selectedImg.img = file.url;
+                this.selectedImg.name = file.name;
+            },
+            handleRemove(file, fileList) {
+                console.log(file);
+                console.log(fileList)
+            },
+            hideUpload(){
+                this.observacionDialogVisible = false;
+                this.fileList = [];
+
+            },
+
+            assignForms(){
+                let item = this.initialization;
                 let self = this;
-                let obj = {
-                    name: '',
-                    file: ''
-                };
-                Object.keys(file).forEach(function (item, index) {
-                    console.log(item + ':' + file[item]);
+                let requisitosObject = [];
+
+                Object.keys(item).forEach((value, index) => {
+                    let items = {
+                        idDimension: '',
+                        nombreDimension: '',
+                        requisito: {
+                            idRequisito: '',
+                            nombreRequisito: '',
+                            pregunta: {
+                                idPregunta: '',
+                                pregunta: '',
+                                valor: '',
+
+                            }
+                        }
+
+                    };
+                    items.idDimension = item[value].id;
+                    items.nombreDimension = item[value].dimension;
+
+
+                    requisitosObject.push(item[value].get_requisitos);
+
+
+                    self.final.push(items);
                 });
-                //self.archivos.push(obj);
 
 
-            },
-            handleError(res, file){
+                requisitosObject.forEach((item, index) => {
+                    Object.keys(item).forEach((value, key) => {
+                        let findDimension = _.find(self.final, (f) => {
+                            return f.idDimension == item[value].idDimension
+                        });
+                        findDimension.requisito.idRequisito = item[value].id;
 
-            },
 
+                        //console.log(item[value].nombreRequisito);
+                    });
+
+
+                })
+
+
+            }
         },
-
-        components: {}
     }
 </script>

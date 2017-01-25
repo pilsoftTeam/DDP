@@ -41,6 +41,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/crear/usuario', 'AdminController@createUser');
     Route::post('/editar/usuario', 'AdminController@editUser');
     Route::post('/borrar/usuario', 'AdminController@deleteUser');
+    Route::post('/crear/directorios', 'CuestionarioController@makeDirectory');
     Route::post('/recibir/archivos', 'CuestionarioController@files');
 
 
