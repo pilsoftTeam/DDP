@@ -64,6 +64,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     //Revisor
 
     Route::get('/traer/revisor/asignaciones', 'RevisorController@getRevisorAsignaciones');
+    Route::post('/terminar/checklist', 'RevisorController@terminar');
 
 
 });

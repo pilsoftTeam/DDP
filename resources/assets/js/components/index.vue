@@ -17,6 +17,8 @@
                                     <div class="panel-body">
 
                                         <h4>A continuacion se muestran las revisiones que debera hacer :</h4>
+
+
                                         <hr>
                                         <div v-for="item in data">
 
@@ -56,7 +58,7 @@
                     <transition name="custom" enter-active-class="animated fadeIn"
                                 leave-active-class="animated fadeOut">
                         <div class="row" v-if="start">
-                            <cuestionario :data="dataRevision"></cuestionario>
+                            <cuestionario :datosRevision="dataRevision"></cuestionario>
                         </div>
                     </transition>
                 </div>
@@ -74,7 +76,7 @@
 </style>
 
 <script>
-    import cuestionario from './revisor/index.vue'
+    import cuestionario from './revisor/cuestionario.vue'
     export default {
 
         mounted(){

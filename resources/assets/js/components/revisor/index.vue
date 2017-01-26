@@ -47,7 +47,7 @@
                                                      v-if="preguntas.numeral != 0">
                                                     <el-input-number
                                                             class="fullWidth"
-                                                            v-model="final.aa"
+                                                            :model="final.num[preguntas.id]"
                                                             size="small"
                                                     ></el-input-number>
                                                 </div>
@@ -63,7 +63,7 @@
                                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
                                                      v-if="preguntas.escrita != 0">
                                                     <el-input
-                                                            v-model="final.azo"
+                                                            v-model="final.esc"
                                                             type="textarea"
                                                             :rows="2"
                                                             placeholder="Agregue una observacion">
@@ -203,7 +203,10 @@
                     'X-CSRF-TOKEN': Laravel.csrfToken
                 },
 
-                final: [],
+                final: {
+                    num: '',
+                    esc: ''
+                },
             }
         },
 
@@ -271,47 +274,47 @@
             assignForms(){
                 let item = this.initialization;
                 let self = this;
-                let requisitosObject = [];
+                let requisitosArray = [];
+                let preguntasArray = [];
 
                 Object.keys(item).forEach((value, index) => {
                     let items = {
                         idDimension: '',
                         nombreDimension: '',
-                        requisito: {
-                            idRequisito: '',
-                            nombreRequisito: '',
-                            pregunta: {
-                                idPregunta: '',
-                                pregunta: '',
-                                valor: '',
-
-                            }
-                        }
-
+                        requisito: [],
+                        pregunta: [],
                     };
                     items.idDimension = item[value].id;
                     items.nombreDimension = item[value].dimension;
-
-
-                    requisitosObject.push(item[value].get_requisitos);
-
-
+                    requisitosArray.push(item[value].get_requisitos);
                     self.final.push(items);
                 });
-
-
-                requisitosObject.forEach((item, index) => {
+                console.log(preguntasArray);
+                requisitosArray.forEach((item, index) => {
                     Object.keys(item).forEach((value, key) => {
                         let findDimension = _.find(self.final, (f) => {
                             return f.idDimension == item[value].idDimension
                         });
-                        findDimension.requisito.idRequisito = item[value].id;
+                        let objRequisitos = {
+                            idRequisito: '',
+                            nombreRequisito: ''
+                        };
+                        objRequisitos.idRequisito = item[value].id;
+                        objRequisitos.nombreRequisito = item[value].nombreRequisito;
+                        findDimension.requisito.push(objRequisitos);
+
+                        let preguntas = item[value];
+
+                        Object.keys(preguntas).forEach((v, i) => {
+                            //console.log()
+                            if (typeof preguntas[v] === 'object') {
+                                console.log(preguntas[v]);
+                            }
+
+                        });
 
 
-                        //console.log(item[value].nombreRequisito);
                     });
-
-
                 })
 
 
