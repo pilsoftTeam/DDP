@@ -85,6 +85,26 @@ class AdminController extends Controller
         return response()->json(200);
     }
 
+
+    public function editarRequisito(Request $request)
+    {
+
+        Requisito::where('id', $request->idRequisito)->update([
+            'nombreRequisito' => $request->nombreRequisito,
+            'idDimension' => $request->idDimension
+        ]);
+
+        return response()->json(200);
+    }
+
+    public function eliminarRequisito($id)
+    {
+        Pregunta::where('idRequisito', $id)->delete();
+        Requisito::destroy($id);
+
+        return response()->json(200);
+    }
+
     /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -130,6 +150,13 @@ class AdminController extends Controller
         $preguntas = Pregunta::where('idRequisito', $id)->orderBy('ordenPreguntas', 'asc')->with('obtenerRequisitos')->get();
 
         return response()->json($preguntas, 200);
+    }
+
+    public function getRequisito($id)
+    {
+        $requisito = Requisito::where('id', $id)->get();
+        return response()->json($requisito);
+
     }
 
 

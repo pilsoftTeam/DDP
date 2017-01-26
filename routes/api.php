@@ -26,8 +26,17 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/crear/dimension', 'AdminController@createDimension');
     Route::post('/crear/requisito', 'AdminController@createRequisito');
     Route::post('/crear/pregunta', 'AdminController@createPregunta');
+
+
+    //Edicion Dimensiones
+
+    Route::post('/editar/requisito', 'AdminController@editarRequisito');
+    Route::delete('/eliminar/requisito/{id}', 'AdminController@eliminarRequisito');
+
+
     //Traer Preguntas
     Route::get('/obtener/preguntas/{id}', 'AdminController@getPreguntas');
+    Route::get('/obtener/requisito/{id}', 'AdminController@getRequisito');
 
 
     //Usuarios

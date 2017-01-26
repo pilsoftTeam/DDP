@@ -99,9 +99,11 @@
                                                 <td>{{data.estado == 0 ? 'Desactivado' : 'Activado'}}</td>
                                                 <td>
                                                     <div class="btn-group">
-                                                        <button type="button" class="btn btn-warning btn-xs">Editar
+                                                        <button type="button" class="btn btn-warning btn-xs"
+                                                                @click="editarRequisitos(data.id)">Editar
                                                         </button>
-                                                        <button type="button" class="btn btn-danger btn-xs">Eliminar
+                                                        <button type="button" class="btn btn-danger btn-xs"
+                                                                @click="eliminarRequisitos(data.id)">Eliminar
                                                         </button>
                                                     </div>
                                                 </td>
@@ -294,6 +296,48 @@
             </el-dialog>
 
 
+            <el-dialog title="Editar Requisito" v-model="editarRequisitoDialogVisible"
+                       size="small">
+                <el-form :model="editarRequisito" class="" :rules="rules" ref="requisitos">
+                    <el-form-item label="Nombre del Requisito" prop="nombreRequisito">
+                        <el-input v-model="editarRequisito.nombreRequisito"></el-input>
+                    </el-form-item>
+                    <el-form-item label="Dimension del requisito" prop="idDimension">
+                        <el-select v-model="editarRequisito.idDimension" placeholder="Elija una"
+                                   style="width: 100%">
+                            <el-option
+                                    v-for="item in data"
+                                    :label="item.dimension"
+                                    :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+
+
+                    <el-form-item>
+                        <el-button type="primary" @click="requisitoEdit('requisitos')"
+                                   class="pull-right">Editar
+                        </el-button>
+                    </el-form-item>
+                </el-form>
+            </el-dialog>
+
+
+            <el-dialog title="Eliminar Requisito" v-model="eliminarRequisitoDialogVisible"
+                       size="tiny">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <h3 class="text-center text-danger">¿ Esta seguro que desea eliminar este requisito ?</h3>
+                        <hr>
+                        <p class="text-center text-info">¡ Si elimina este requisito, todas las preguntas de este
+                            tambien se eliminaran !</p>
+                        <br>
+                        <button class="btn btn-danger btn-block" @click="requisitoDelete">Eliminar</button>
+                    </div>
+                </div>
+            </el-dialog>
+
+
             <div class="btn-group fixedbutton">
                 <button type="button" class="btn btn-success" @click="dimensionDialogVisible = true">
                     Dimension
@@ -365,27 +409,34 @@
 
                 },
 
-                tecnicasAuditoria: [{
-                    value: 'Observación',
-                    label: 'Observación'
-                }, {
-                    value: 'Observación, Revisión Oferta',
-                    label: 'Observación, Revisión Oferta'
-                }, {
-                    value: 'Inspección física (hardware y software) equipamiento computacionales, Catastro de Licencias de Software. Facturas de Compra',
-                    label: 'Inspección física (hardware y software) equipamiento computacionales, Catastro de Licencias de Software. Facturas de Compra'
-                }, {
-                    value: 'Medición de la velocidad de trasferencia de datos, Observación. Contrato ISP',
-                    label: 'Medición de la velocidad de trasferencia de datos, Observación. Contrato ISP'
-                }, {
-                    value: 'Observación, Inspección y reproceso. Entrevista a usuarios',
-                    label: 'Observación, Inspección y reproceso. Entrevista a usuarios'
-                }, {
-                    value: 'Observación, Inspección y reproceso. Revisión sistemas informáticos',
-                    label: 'Observación, Inspección y reproceso. Revisión sistemas informáticos'
-                }],
 
+                editarRequisito: {
+                    idRequisito: '',
+                    idDimension: '',
+                    nombreRequisito: ''
+                },
+                idEliminarRequisito: '',
 
+                tecnicasAuditoria: [
+                    {
+                        value: 'Observación',
+                        label: 'Observación'
+                    }, {
+                        value: 'Observación, Revisión Oferta',
+                        label: 'Observación, Revisión Oferta'
+                    }, {
+                        value: 'Inspección física (hardware y software) equipamiento computacionales, Catastro de Licencias de Software. Facturas de Compra',
+                        label: 'Inspección física (hardware y software) equipamiento computacionales, Catastro de Licencias de Software. Facturas de Compra'
+                    }, {
+                        value: 'Medición de la velocidad de trasferencia de datos, Observación. Contrato ISP',
+                        label: 'Medición de la velocidad de trasferencia de datos, Observación. Contrato ISP'
+                    }, {
+                        value: 'Observación, Inspección y reproceso. Entrevista a usuarios',
+                        label: 'Observación, Inspección y reproceso. Entrevista a usuarios'
+                    }, {
+                        value: 'Observación, Inspección y reproceso. Revisión sistemas informáticos',
+                        label: 'Observación, Inspección y reproceso. Revisión sistemas informáticos'
+                    }],
                 rules: {
                     nombreDimension: [
                         {required: true, message: 'Por favor escriba algo', trigger: 'blur'},
@@ -452,6 +503,8 @@
                 showDocumentalHeader: false,
                 showDimension: false,
                 showPreguntas: false,
+                editarRequisitoDialogVisible: false,
+                eliminarRequisitoDialogVisible: false,
             }
         },
 
@@ -514,9 +567,6 @@
                     if (valid) {
                         let data = this.pregunta;
                         this.$http.post('/api/crear/pregunta', data).then((response) => {
-
-                            console.log(response.data);
-
                             this.pregunta.pregunta = '';
                             this.pregunta.idRequisito = '';
                             this.pregunta.escrita = false;
@@ -539,12 +589,65 @@
             eliminarDimension(){
 
             },
+
+            editarRequisitos(id){
+                this.editarRequisitoDialogVisible = true;
+
+                this.$http.get('/api/obtener/requisito/' + id).then((response) => {
+                    this.editarRequisito.idRequisito = response.data[0].id;
+                    this.editarRequisito.idDimension = response.data[0].idDimension;
+                    this.editarRequisito.nombreRequisito = response.data[0].nombreRequisito;
+                }, (response) => {
+                    console.log('Error : ' + response.status)
+                });
+
+            },
+            requisitoEdit(formName){
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let data = this.editarRequisito;
+                        this.$http.post('/api/editar/requisito', data).then((response) => {
+                            this.success();
+                            this.editarRequisito.idRequisito = '';
+                            this.editarRequisito.idDimension = '';
+                            this.editarRequisito.nombreRequisito = '';
+                            this.editarRequisitoDialogVisible = false;
+                            this.success();
+                            this.initLoad();
+                        }, (response) => {
+                            this.error(response.status);
+                        });
+                    } else {
+                        return false;
+                    }
+                })
+            },
+
+            eliminarRequisitos(id){
+                this.idEliminarRequisito = id;
+                this.eliminarRequisitoDialogVisible = true
+            },
+
+            requisitoDelete(){
+                let id = this.idEliminarRequisito;
+                this.$http.delete('/api/eliminar/requisito/' + id).then((response) => {
+                    this.eliminarRequisitoDialogVisible = false
+                    this.success();
+                    this.initLoad();
+                }, (response) => {
+                    this.error(response.status)
+                })
+            },
+
+
             editarPregunta(id){
                 alert(id);
             },
             eliminarPregunta(id){
                 alert('Va a eliminar a : ' + id + '. Esta seguro');
             },
+
+
             create(){
 
             },
@@ -573,8 +676,6 @@
 
 
             getPreguntas(id){
-
-
                 this.$http.get('/api/obtener/preguntas/' + id + '').then((response) => {
                     let data = response.data;
                     let self = this;
