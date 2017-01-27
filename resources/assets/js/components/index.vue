@@ -97,6 +97,7 @@
             getAsignaciones(){
                 this.$http.get('/api/traer/revisor/asignaciones').then((response) => {
                     this.data = response.data
+                    console.log(response.data);
                 }, (response) => {
                     console.log('Error : ' + response.status)
                 })

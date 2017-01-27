@@ -15,7 +15,7 @@
                         <el-tab-pane label="Config">
                             <span slot="label">
                                 <icon name="address-book-o"></icon>
-                                &nbsp;Ver estado de asignaciones / Calidad
+                                &nbsp;Calidad
                             </span>
                             <estadoAsignaciones></estadoAsignaciones>
                         </el-tab-pane>

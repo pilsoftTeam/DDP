@@ -6,31 +6,28 @@
             <h4 class="text-center">Oficinas pendientes para revision</h4>
             <hr>
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                <h4 class="text-center">Oficinas pendientes</h4>
-                <ul class="list-group" v-for="oficinas in oficinasPendientes">
-                    <li class="btn list-group-item" @click="informacionOficinas(oficinas)">{{oficinas.region}}</li>
-                </ul>
+                <h4 class="text-center">Regiones</h4>
+                <el-menu class="el-menu-vertical-demo" v-for="regiones in oficinasPendientes">
+                    <el-submenu index="1">
+                        <template slot="title">{{regiones.nombreRegion}}</template>
+                        <el-menu-item-group title="Comunas">
+                            <div v-for="(comunas, index) in regiones.get_comunas">
+                                <el-menu-item index="1-index">
+                                    <div @click="informacionOficinas(comunas.get_oficinas)">
+                                        {{comunas.nombreComuna}}
+                                    </div>
+                                </el-menu-item>
+                            </div>
+                        </el-menu-item-group>
+                    </el-submenu>
+                </el-menu>
             </div>
             <div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-
                 <div class="panel panel-default" v-if="mostrarInformacion">
-                    <div class="panel-body">
+                    <div class="panel-body dialogRow">
                         <div class="row">
-                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                                <ul class="list-group">
-                                    <li class="list-group-item">Zona : <b>{{oficinaSeleccionada.zona}}</b></li>
-                                    <li class="list-group-item">N° de llamado interno : <b>{{oficinaSeleccionada.numeroLlamadoInterno}}</b>
-                                    </li>
-                                    <li class="list-group-item">N° zona licitacion : <b>{{oficinaSeleccionada.numeroZonaLicitacion}}</b>
-                                    </li>
-                                    <li class="list-group-item">Region : <b>{{oficinaSeleccionada.region}}</b></li>
-                                    <li class="list-group-item">Comuna : <b>{{oficinaSeleccionada.comuna}}</b></li>
-                                    <li class="list-group-item">Direccion : <b>{{oficinaSeleccionada.direccion}}</b>
-                                    </li>
-                                    <li class="list-group-item">Fono(s) : <b>{{oficinaSeleccionada.fono}}</b></li>
-                                    <li class="list-group-item">Email : <b>{{oficinaSeleccionada.email}}</b></li>
-                                </ul>
-                            </div>
+                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
+
                             <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                                 <h4 class="text-center">Asignar a un revisor.</h4>
                                 <br>
@@ -44,16 +41,117 @@
                                         <span style="float: right" class="text-capitalize">{{revisor.get_nombre_perfil.perfil}} / + {{revisor.get_usuario.get_asignaciones.length }} </span>
                                     </el-option>
                                 </el-select>
-
                                 <br>
                                 <br>
                                 <button class="btn btn-block btn-md btn-success" @click="crearAsignacion">Asignar
                                 </button>
+                            </div>
+                            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2"></div>
+                        </div>
+                        <hr>
+                        <h4 class="text-center">Datos de oficina</h4>
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
+                                <table class="table table-hover well">
+                                    <thead>
+                                    <tr>
+                                        <th v-for="(item , index, key ) in  oficinaSeleccionada">{{index}}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td v-for="(item , index, key ) in  oficinaSeleccionada"> {{item}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
+
+
+                <div v-if="mostrarAsignado">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="panel panel-default">
+                                <div class="panel-body dialogRow">
+                                    <h4 class="text-center">Tarea ya asignada</h4>
+                                    <h6 class="text-center">Detalles</h6>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+                                        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                                            <div class="list-group">
+                                                <a href="#" class="list-group-item">
+                                                    <h4 class="list-group-item-heading">Informacion Oficina</h4>
+                                                    <hr>
+                                                    <div class="list-group-item-text">
+
+                                                        <h5>Zona :
+                                                            <span class="label label-success">{{oficinaSeleccionada.zona}}</span>
+                                                        </h5>
+                                                        <h5>N° zona licitación :
+                                                            <span class="label label-success">{{oficinaSeleccionada.numeroZonaLicitacion}}</span>
+                                                        </h5>
+                                                        <h5>N° llamado interno :
+                                                            <span class="label label-success">{{oficinaSeleccionada.numeroLlamadoInterno}}</span>
+                                                        </h5>
+                                                        <h5>Direccion :
+                                                            <span class="label label-success">{{oficinaSeleccionada.direccion}}</span>
+                                                        </h5>
+                                                        <h5>Email :
+                                                            <span class="label label-success">{{oficinaSeleccionada.email}}</span>
+                                                        </h5>
+                                                        <h5>Fono :
+                                                            <span class="label label-success">{{oficinaSeleccionada.fono}}</span>
+                                                        </h5>
+
+                                                    </div>
+                                                </a>
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                                            <div class="list-group">
+                                                <a href="#" class="list-group-item">
+                                                    <h4 class="list-group-item-heading">Informacion Asignacion</h4>
+                                                    <hr>
+                                                    <div class="list-group-item-text"
+                                                         v-for="a in oficinaSeleccionada.get_asignaciones">
+                                                        <h5>Creador :
+                                                            <span class="label label-success">{{a.get_creador.name}}</span>
+                                                        </h5>
+                                                        <h5>Usuario asignado :
+                                                            <span class="label label-success">{{a.get_realizador.name}}</span>
+                                                        </h5>
+                                                        <h5>Fecha asignacion :
+                                                            <span class="label label-success">{{a.created_at}}</span>
+                                                        </h5>
+                                                        <h5>Estado :
+                                                            <span class="label label-info">{{a.estado}}</span>
+                                                        </h5>
+                                                    </div>
+                                                </a>
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
         </div>
 
@@ -64,6 +162,11 @@
         width: 100%;
         min-width: 100%;
         max-width: 100%;
+    }
+
+    .dialogRow {
+        min-height: 75vh;
+        max-height: 100%;
     }
 </style>
 <script>
@@ -77,9 +180,10 @@
         data(){
             return {
                 revisores: '',
-                oficinasPendientes: [],
+                oficinasPendientes: '',
                 oficinaSeleccionada: '',
                 mostrarInformacion: false,
+                mostrarAsignado: false,
                 asignar: {
                     idUsuario: '',
                     idOficina: ''
@@ -96,20 +200,33 @@
                 })
             },
             getOficinas(){
-                this.$http.get('/api/traer/oficinas/').then((response) => {
+                this.$http.get('/api/traer/oficinas').then((response) => {
+                    this.oficinasPendientes = response.data;
                     let oficinas = response.data;
-                    _.forEach(oficinas, (item) => {
-                        item.get_asignaciones.length == 0 ? this.oficinasPendientes.push(item) : false;
-                    });
+                    //_.forEach(oficinas, (item) => {
+                    //    console.log(item);
+                    //    //item.get_asignaciones.length == 0 ? this.oficinasPendientes.push(item) : false;
+                    //});
                 }, (response) => {
                     this.error(response.status)
                 })
             },
 
             informacionOficinas(data){
-                this.oficinaSeleccionada = data;
-                this.asignar.idOficina = data.id;
-                this.mostrarInformacion = true;
+
+
+                if (data[0].get_asignaciones.length > 0) {
+                    this.mostrarInformacion = false;
+                    this.mostrarAsignado = true;
+                    this.oficinaSeleccionada = _.omit(data[0], 'id', 'created_at', 'updated_at', 'idComuna');
+                } else {
+                    this.mostrarAsignado = false;
+                    this.mostrarInformacion = true;
+                    this.asignar.idOficina = data[0].id;
+                    this.oficinaSeleccionada = _.omit(data[0], 'id', 'created_at', 'updated_at', 'idComuna', 'get_asignaciones');
+
+                }
+
             },
 
             crearAsignacion(){
@@ -124,8 +241,6 @@
                     this.error(response.status)
                 })
             },
-
-
             success(){
                 this.$notify.success({
                     title: 'Exito',

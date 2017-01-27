@@ -11,7 +11,7 @@ class Asignacion extends Model
 
     public function getOficinasAsignadas()
     {
-        return $this->hasOne('App\Oficinas', 'id', 'idOficinaAsignada');
+        return $this->hasOne('App\Oficinas', 'id', 'idOficinaAsignada')->with('getComuna');
     }
 
     public function getCreador()

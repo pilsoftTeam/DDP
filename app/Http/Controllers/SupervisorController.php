@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Asignacion;
 use App\Oficinas;
 use App\Perfilamiento;
+use App\Regiones;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -21,8 +22,10 @@ class SupervisorController extends Controller
 
     public function getOficinas()
     {
-        $oficinas = Oficinas::with('getAsignaciones')->get();
-        return response()->json($oficinas, 200);
+        $oficinasRegiones = Regiones::with('getComunas')->get();
+
+        //$oficinas = Oficinas::with('getAsignaciones')->get();
+        return response()->json($oficinasRegiones, 200);
     }
 
     public function createAsignacion(Request $request)
@@ -41,14 +44,14 @@ class SupervisorController extends Controller
     public function getAsignaciones()
     {
         $asignaciones = Asignacion::with('getOficinasAsignadas', 'getCreador', 'getRealizador', 'getCuestionarioRealizado')->get();
-
         return response()->json($asignaciones);
     }
 
 
     public function getAsignacionesRevisadas()
     {
-
+        $asignacion = Asignacion::where('estado', 'revisado')->with('getOficinasAsignadas', 'getCreador', 'getRealizador', 'getCuestionarioRealizado')->get();
+        return response()->json($asignacion, 200);
     }
 
 }

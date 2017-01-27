@@ -11,6 +11,10 @@ class Oficinas extends Model
 
     public function getAsignaciones()
     {
-        return $this->hasMany('App\Asignacion', 'idOficinaAsignada', 'id');
+        return $this->hasMany('App\Asignacion', 'idOficinaAsignada', 'id')->with('getCreador', 'getRealizador');
+    }
+
+    public function getComuna(){
+        return $this->belongsTo('App\Comunas', 'idComuna', 'id')->with('getRegion');
     }
 }

@@ -53,9 +53,11 @@
                                         <div v-if="initPreguntas.idRequisito == pregunta.idRequisito">
                                             <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                                                 <p class="pull-left">{{pregunta.pregunta}}</p>
-                                                <br>
-
                                                 <hr>
+                                                <small class="label label-default">Tecnica auditoria : <b>{{pregunta.tecnicaAuditoria}}</b>
+                                                </small>
+                                                <br>
+                                                <br>
                                             </div>
                                             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                                                 <el-radio-group v-model="pregunta.opcion" class="pull-right">
@@ -138,6 +140,7 @@
                 </div>
             </div>
         </div>
+        <!--
         <el-dialog title="Observaciones" v-model="observacionDialogVisible" size="large">
             <div class="row">
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 ">
@@ -180,6 +183,8 @@
                 <el-button type="primary" @click="hideUpload">Confirmar</el-button>
               </span>
         </el-dialog>
+
+        -->
 
 
     </div>
@@ -379,6 +384,9 @@
                     return i.idPregunta == response[0];
                 });
 
+                console.log(response[1]);
+
+                findPreguntaObj.rutaObservaciones = response[1];
                 findPreguntaObj.fileList.push(fileList);
                 //console.log(response[0]);
                 //console.log(fileList)
