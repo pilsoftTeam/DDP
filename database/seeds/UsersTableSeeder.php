@@ -22,6 +22,26 @@ class UsersTableSeeder extends Seeder
             'idPerfil' => 1,
             'idUsuario' => 1
         ]);
+        DB::table('usuarios')->insert([
+            'name' => 'supervisor',
+            'email' => 'supervisor@sistema.cl',
+            'password' => bcrypt('supervisor')
+        ]);
+
+        DB::table('perfilamientos')->insert([
+            'idPerfil' => 2,
+            'idUsuario' => 2
+        ]);
+        DB::table('usuarios')->insert([
+            'name' => 'revisor',
+            'email' => 'revisor@sistema.cl',
+            'password' => bcrypt('revisor')
+        ]);
+
+        DB::table('perfilamientos')->insert([
+            'idPerfil' => 3,
+            'idUsuario' => 3
+        ]);
 
 
     }

@@ -21,7 +21,6 @@ class OficinaSeeder extends Seeder
             'direccion' => 'Arturo Gallo 294',
             'fono' => '(58) 2583040 - 2583041',
             'email' => 'arica@ddp.cl',
-            'estado' => 'pendiente'
         ]);
         DB::table('oficinas')->insert([
             'zona' => 'zona1',
@@ -32,7 +31,6 @@ class OficinaSeeder extends Seeder
             'direccion' => 'Uno Norte 931, piso 7 , Oficina 704',
             'fono' => '(71) 2213055 - 2218282',
             'email' => 'maule@ddp.cl',
-            'estado' => 'pendiente'
         ]);
     }
 }

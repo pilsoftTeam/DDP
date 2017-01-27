@@ -23,8 +23,11 @@ class RevisorController extends Controller
     public function terminar(Request $request)
     {
 
+
+        $idAsignacion = $request->oficina['id'];
         foreach ($request->preguntas as $item) {
             $resultado = new Resultados();
+            $resultado->idAsignacion = $idAsignacion;
             $resultado->idPregunta = $item['idPregunta'];
             $resultado->cumplimiento = $item['opcion'];
             $resultado->observacionNumeral = empty($item['inputNumeral']) ? null : $item['inputNumeral'];
@@ -33,7 +36,7 @@ class RevisorController extends Controller
             $resultado->save();
         }
 
-        Oficinas::where('id', $request->oficina['idOficinaAsignada'])->update([
+        Asignacion::where('id', $idAsignacion)->update([
             'estado' => 'revisado'
         ]);
 

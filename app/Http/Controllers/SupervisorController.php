@@ -19,11 +19,10 @@ class SupervisorController extends Controller
         return response()->json($revisores, 200);
     }
 
-    public function getOficinasPendientes()
+    public function getOficinas()
     {
-        $oficinasPendientes = Oficinas::where('estado', 'pendiente')->get();
-
-        return response()->json($oficinasPendientes, 200);
+        $oficinas = Oficinas::with('getAsignaciones')->get();
+        return response()->json($oficinas, 200);
     }
 
     public function createAsignacion(Request $request)
@@ -33,20 +32,23 @@ class SupervisorController extends Controller
         $asignacion->idUsuarioAsignado = $request->idUsuario;
         $asignacion->idUsuarioAsignador = Auth::user()->id;
         $asignacion->idOficinaAsignada = $request->idOficina;
+        $asignacion->estado = 'asignado';
         $asignacion->save();
-
-        Oficinas::where('id', $request->idOficina)->update([
-            'estado' => 'asignado'
-        ]);
 
         return response()->json(200);
     }
 
     public function getAsignaciones()
     {
-        $asignaciones = Asignacion::with('getOficinasAsignadas', 'getCreador', 'getRealizador')->get();
+        $asignaciones = Asignacion::with('getOficinasAsignadas', 'getCreador', 'getRealizador', 'getCuestionarioRealizado')->get();
 
         return response()->json($asignaciones);
+    }
+
+
+    public function getAsignacionesRevisadas()
+    {
+
     }
 
 }

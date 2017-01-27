@@ -57,7 +57,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     //SuperVisor
 
     Route::get('/traer/revisores', 'SupervisorController@getRevisores');
-    Route::get('/traer/oficinas/pendientes', 'SupervisorController@getOficinasPendientes');
+    Route::get('/traer/oficinas', 'SupervisorController@getOficinas');
     Route::post('/crear/asignacion', 'SupervisorController@createAsignacion');
     Route::get('traer/asignaciones', 'SupervisorController@getAsignaciones');
 

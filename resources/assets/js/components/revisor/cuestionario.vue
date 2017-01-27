@@ -54,14 +54,26 @@
                                             <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                                                 <p class="pull-left">{{pregunta.pregunta}}</p>
                                                 <br>
+
+                                                <hr>
+                                            </div>
+                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                <el-radio-group v-model="pregunta.opcion" class="pull-right">
+                                                    <el-radio :label="1">Cumple</el-radio>
+                                                    <el-radio :label="0">No Cumple</el-radio>
+                                                </el-radio-group>
+                                            </div>
+
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                                 <div class="row">
                                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                                        <el-collapse v-model="collapse" @change="handleChange">
+                                                        <el-collapse v-model="collapse"
+                                                                     @change="handleChange(pregunta.idPregunta)">
                                                             <el-collapse-item title="Observaciones"
                                                                               :name="pregunta.idPregunta">
                                                                 <div class="row">
                                                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                                                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
+                                                                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"
                                                                              v-if="pregunta.numeral">
                                                                             <h5 class="text-center">Cantidad</h5>
                                                                             <el-input-number
@@ -70,15 +82,32 @@
                                                                                     size="small">
                                                                             </el-input-number>
                                                                         </div>
-                                                                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"
+                                                                        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8"
                                                                              v-if="pregunta.documental">
                                                                             <h5 class="text-center">Añadir
                                                                                 evidencia</h5>
-                                                                            <button class="btn btn-sm btn-success btn-block"
-                                                                                    @click="addObservaciones(pregunta.id)">
-                                                                                <icon name="plus-circle"
-                                                                                      scale="1"></icon>
-                                                                            </button>
+
+                                                                            <el-upload
+                                                                                    class="centerable center center-block"
+                                                                                    action="//localhost/api/recibir/archivos"
+                                                                                    name="documentos"
+                                                                                    type="drag"
+                                                                                    :data="subirArchivo"
+                                                                                    :multiple="true"
+                                                                                    :headers="headers"
+                                                                                    :before-upload="beforeUpload"
+                                                                                    :on-preview="handlePreview"
+                                                                                    :on-remove="handleRemove"
+                                                                                    :on-success="handleSuccess"
+                                                                                    :on-error="handleError"
+                                                                                    :default-file-list="pregunta.fileList">
+                                                                                <el-button size="small" type="primary">
+                                                                                    Click aqui para subir
+                                                                                </el-button>
+                                                                                <div class="el-upload__tip" slot="tip">
+                                                                                    o puede arrastrar archivos aca
+                                                                                </div>
+                                                                            </el-upload>
                                                                         </div>
                                                                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
                                                                              v-if="pregunta.escrita">
@@ -97,13 +126,8 @@
                                                         </el-collapse>
                                                     </div>
                                                 </div>
-                                                <hr>
-                                            </div>
-                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                                                <el-radio-group v-model="pregunta.opcion" class="pull-right">
-                                                    <el-radio :label="1">Cumple</el-radio>
-                                                    <el-radio :label="0">No Cumple</el-radio>
-                                                </el-radio-group>
+                                                <br>
+                                                <br>
                                             </div>
                                         </div>
                                     </div>
@@ -202,6 +226,7 @@
                 data: '',
                 dimensiones: [],
                 preguntas: [],
+                filelist: [],
                 dimensionActual: {
                     adelante: 'Siguiente',
                     atras: 'Atras',
@@ -220,7 +245,7 @@
                 },
                 subirArchivo: {
                     idPregunta: '',
-                    data: '',
+                    data: ''
                 },
                 divisionLoaded: false,
                 observacionDialogVisible: false,
@@ -291,12 +316,12 @@
                         escrita: '',
                         documental: '',
                         tecnicaAuditoria: '',
-                        opcion: '',
+                        opcion: 0,
                         inputNumeral: '',
                         inputEscrito: '',
+                        rutaObservaciones: '',
+                        fileList: []
                     };
-
-
                     pregunta.idPregunta = i.id;
                     pregunta.idRequisito = i.idRequisito;
                     pregunta.pregunta = i.pregunta;
@@ -324,7 +349,6 @@
 
 
             },
-
             changeDimensionBackWard(){
                 let dimensiones = this.dimensiones;
                 let dimLenght = dimensiones.length;
@@ -347,8 +371,17 @@
             beforeUpload(file){
                 this.subirArchivo.data = this.datosRevision.idOficinaAsignada;
             },
-            handleSuccess(){
+            handleSuccess(response, fileList){
 
+                let preguntas = this.preguntas;
+
+                let findPreguntaObj = _.find(preguntas, (i) => {
+                    return i.idPregunta == response[0];
+                });
+
+                findPreguntaObj.fileList.push(fileList);
+                //console.log(response[0]);
+                //console.log(fileList)
             },
             handleError(){
 
@@ -367,8 +400,8 @@
 
             },
 
-            handleChange(){
-
+            handleChange(id){
+                this.subirArchivo.idPregunta = id;
             },
 
             terminar(){

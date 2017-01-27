@@ -47,8 +47,7 @@ class CuestionarioController extends Controller
         $request->documentos->storeAs($this->oficina . '/' . $dimension . '/' . $nombreRequisito . '/' . $pregunta . '/', $fileName);
 
 
-        return response()->json(200);
-
+        return response()->json([$request->idPregunta, $this->oficina . '/' . $dimension . '/' . $nombreRequisito . '/' . $pregunta], 200);
     }
 
 }

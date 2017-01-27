@@ -15,6 +15,8 @@ class CreateResultadosTable extends Migration
     {
         Schema::create('resultados', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('idAsignacion');
+            $table->foreign('idAsignacion')->references('id')->on('asignaciones');
             $table->unsignedInteger('idPregunta');
             $table->foreign('idPregunta')->references('id')->on('preguntas');
             $table->boolean('cumplimiento');

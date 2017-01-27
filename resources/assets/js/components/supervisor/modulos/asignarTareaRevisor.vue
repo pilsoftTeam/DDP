@@ -67,20 +67,19 @@
     }
 </style>
 <script>
-
+    import _ from 'lodash';
     export default{
 
         mounted(){
             this.getRevisores();
-            this.getOficinasPendientes();
+            this.getOficinas();
         },
         data(){
             return {
                 revisores: '',
-                oficinasPendientes: '',
+                oficinasPendientes: [],
                 oficinaSeleccionada: '',
                 mostrarInformacion: false,
-
                 asignar: {
                     idUsuario: '',
                     idOficina: ''
@@ -91,16 +90,17 @@
 
             getRevisores(){
                 this.$http.get('/api/traer/revisores').then((response) => {
-                    console.log(response.data);
-
                     this.revisores = response.data
                 }, (response) => {
                     this.error(response.status)
                 })
             },
-            getOficinasPendientes(){
-                this.$http.get('/api/traer/oficinas/pendientes').then((response) => {
-                    this.oficinasPendientes = response.data;
+            getOficinas(){
+                this.$http.get('/api/traer/oficinas/').then((response) => {
+                    let oficinas = response.data;
+                    _.forEach(oficinas, (item) => {
+                        item.get_asignaciones.length == 0 ? this.oficinasPendientes.push(item) : false;
+                    });
                 }, (response) => {
                     this.error(response.status)
                 })
@@ -108,19 +108,20 @@
 
             informacionOficinas(data){
                 this.oficinaSeleccionada = data;
-                this.asignar.idOficina = data.id
+                this.asignar.idOficina = data.id;
                 this.mostrarInformacion = true;
             },
 
             crearAsignacion(){
                 let data = this.asignar;
-
-
                 this.$http.post('/api/crear/asignacion', data).then((response) => {
-                    console.log(response.data);
+                    this.oficinasPendientes.length = 0;
+                    this.mostrarInformacion = false;
+                    this.getOficinas();
+                    this.getRevisores();
                     this.success();
                 }, (response) => {
-                    this.error(response.statusl)
+                    this.error(response.status)
                 })
             },
 

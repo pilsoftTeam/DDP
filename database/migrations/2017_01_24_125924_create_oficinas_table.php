@@ -23,7 +23,6 @@ class CreateOficinasTable extends Migration
             $table->string('direccion');
             $table->string('fono');
             $table->string('email');
-            $table->enum('estado', ['pendiente', 'asignado', 'revisado', 'calidad', 'terminado', 'informado']);
             $table->timestamps();
         });
     }
