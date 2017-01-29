@@ -24,8 +24,8 @@
 
                                             <div class="panel panel-info">
                                                 <div class="panel-heading">
-                                                    <h3 class="panel-title">Region :
-                                                        {{item.get_oficinas_asignadas.region}}</h3>
+                                                    <h3 class="panel-title">Comuna :
+                                                        {{item.get_oficinas_asignadas.get_comuna.nombreComuna}}</h3>
                                                 </div>
                                                 <div class="panel-body">
                                                     <h5>Tips y observaciones : </h5>
@@ -96,8 +96,7 @@
 
             getAsignaciones(){
                 this.$http.get('/api/traer/revisor/asignaciones').then((response) => {
-                    this.data = response.data
-                    console.log(response.data);
+                    this.data = response.data;
                 }, (response) => {
                     console.log('Error : ' + response.status)
                 })

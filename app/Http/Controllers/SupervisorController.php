@@ -3,16 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Asignacion;
-use App\Oficinas;
+use App\Dimension;
 use App\Perfilamiento;
 use App\Regiones;
+use Chumper\Zipper\Facades\Zipper;
 use Illuminate\Http\Request;
-
-use App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
 
 class SupervisorController extends Controller
 {
+
     public function getRevisores()
     {
         $revisores = Perfilamiento::where('idPerfil', '!=', 1)->with('getUsuario', 'getNombrePerfil')->get();
@@ -50,8 +52,44 @@ class SupervisorController extends Controller
 
     public function getAsignacionesRevisadas()
     {
+        $preguntas = Dimension::with('getRequisitos')->get();
         $asignacion = Asignacion::where('estado', 'revisado')->with('getOficinasAsignadas', 'getCreador', 'getRealizador', 'getCuestionarioRealizado')->get();
-        return response()->json($asignacion, 200);
+
+
+        return response()->json([$asignacion, $preguntas], 200);
     }
+
+    public function getDocs(Request $request)
+    {
+        $files = glob(storage_path() . '/app/' . $request->ruta . '/*');
+        Zipper::make(storage_path() . '/app/zip.zip')->add($files)->close();
+
+        return response()->download(storage_path() . '/app/zip.zip')->deleteFileAfterSend(true);
+
+
+    }
+
+    public function end(Request $request)
+    {
+
+        if ($request->opcion === 'aprobado') {
+            Asignacion::where('id', $request->idAsignacion)->update([
+                'estado' => 'terminado',
+                'idSupervisorRevisor' => Auth::user()->id,
+                'observaciones' => $request->observacion
+
+            ]);
+        } else {
+            Asignacion::where('id', $request->idAsignacion)->update([
+                'estado' => 'pendiente',
+                'idSupervisorRevisor' => Auth::user()->id,
+                'observaciones' => $request->observacion
+            ]);
+        }
+
+
+        return response()->json(200);
+    }
+
 
 }

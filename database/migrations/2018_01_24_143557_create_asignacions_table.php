@@ -22,6 +22,9 @@ class CreateAsignacionsTable extends Migration
             $table->unsignedInteger('idOficinaAsignada');
             $table->foreign('idOficinaAsignada')->references('id')->on('oficinas');
             $table->enum('estado', ['pendiente', 'asignado', 'revisado', 'calidad', 'rechazado', 'terminado', 'informado']);
+            $table->unsignedInteger('idSupervisorRevisor')->nullable();
+            $table->foreign('idSupervisorRevisor')->references('id')->on('usuarios');
+            $table->longText('observaciones')->nullable();
             $table->timestamps();
         });
     }

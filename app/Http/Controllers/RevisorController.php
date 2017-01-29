@@ -15,7 +15,9 @@ class RevisorController extends Controller
 
     public function getRevisorAsignaciones()
     {
-        $asignaciones = Asignacion::where('idUsuarioAsignado', Auth::user()->id)->with('getOficinasAsignadas')->get();
+        $asignaciones = Asignacion::where('idUsuarioAsignado', Auth::user()->id)
+            ->where('estado', 'asignado')
+            ->with('getOficinasAsignadas')->get();
 
         return response()->json($asignaciones, 200);
     }

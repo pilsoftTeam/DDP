@@ -62,7 +62,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/traer/asignaciones', 'SupervisorController@getAsignaciones');
 
 
+    Route::post('/traer/docs', 'SupervisorController@getDocs');
+
+
     Route::get('/asignaciones/revisadas', 'SupervisorController@getAsignacionesRevisadas');
+
+    Route::post('/terminar/revision', 'SupervisorController@end');
 
     //Revisor
 

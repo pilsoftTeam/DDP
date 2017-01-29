@@ -95,7 +95,7 @@
                                                                                     name="documentos"
                                                                                     type="drag"
                                                                                     :data="subirArchivo"
-                                                                                    :multiple="true"
+                                                                                    :multiple="false"
                                                                                     :headers="headers"
                                                                                     :before-upload="beforeUpload"
                                                                                     :on-preview="handlePreview"
@@ -140,53 +140,6 @@
                 </div>
             </div>
         </div>
-        <!--
-        <el-dialog title="Observaciones" v-model="observacionDialogVisible" size="large">
-            <div class="row">
-                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 ">
-                    <el-upload
-                            class="centerable center center-block"
-                            action="//localhost/api/recibir/archivos"
-                            name="documentos"
-                            type="drag"
-                            :data="subirArchivo"
-                            :multiple="true"
-                            :headers="headers"
-                            :before-upload="beforeUpload"
-                            :on-preview="handlePreview"
-                            :on-remove="handleRemove"
-                            :on-success="handleSuccess"
-                            :on-error="handleError"
-                            :default-file-list="fileList">
-                        <i class="el-icon-upload"></i>
-                        <div class="el-dragger__text">Arrastre archivos hasta aca o , <em>Toque aqui para subir</em>
-                        </div>
-                        <div class="el-upload__tip" slot="tip"></div>
-                    </el-upload>
-                </div>
-                <h5>Previsualización</h5>
-                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 borderRight">
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <img :src="selectedImg.img" class="img img-rounded img-responsive"
-                                 style="margin: 0 auto; max-height: 200px;max-width: 200px">
-                            <hr>
-                            <br>
-                            <h4 class="text-center">{{selectedImg.name}}</h4>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="observacionDialogVisible = false">Cancelar</el-button>
-                <el-button type="primary" @click="hideUpload">Confirmar</el-button>
-              </span>
-        </el-dialog>
-
-        -->
-
-
     </div>
 </template>
 <style>
@@ -250,7 +203,9 @@
                 },
                 subirArchivo: {
                     idPregunta: '',
-                    data: ''
+                    idRequisito: '',
+                    idComuna: '',
+                    idRegion: '',
                 },
                 divisionLoaded: false,
                 observacionDialogVisible: false,
@@ -356,9 +311,7 @@
             },
             changeDimensionBackWard(){
                 let dimensiones = this.dimensiones;
-                let dimLenght = dimensiones.length;
                 let active = _.findIndex(dimensiones, {'estado': true});
-                let self = this;
                 if (active > 0) {
                     dimensiones[active].estado = false;
                     dimensiones[active - 1].estado = true;
@@ -374,22 +327,17 @@
                 this.observacionDialogVisible = true;
             },
             beforeUpload(file){
-                this.subirArchivo.data = this.datosRevision.idOficinaAsignada;
+
+                this.subirArchivo.idRegion = this.datosRevision.get_oficinas_asignadas.get_comuna.idRegion;
+                this.subirArchivo.idComuna = this.datosRevision.get_oficinas_asignadas.get_comuna.id;
             },
             handleSuccess(response, fileList){
-
                 let preguntas = this.preguntas;
-
                 let findPreguntaObj = _.find(preguntas, (i) => {
                     return i.idPregunta == response[0];
                 });
-
-                console.log(response[1]);
-
                 findPreguntaObj.rutaObservaciones = response[1];
                 findPreguntaObj.fileList.push(fileList);
-                //console.log(response[0]);
-                //console.log(fileList)
             },
             handleError(){
 
@@ -410,6 +358,7 @@
 
             handleChange(id){
                 this.subirArchivo.idPregunta = id;
+                this.subirArchivo.idRequisito = this.initPreguntas.idRequisito;
             },
 
             terminar(){

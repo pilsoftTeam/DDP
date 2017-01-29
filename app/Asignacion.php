@@ -26,6 +26,6 @@ class Asignacion extends Model
 
     public function getCuestionarioRealizado()
     {
-        return $this->hasMany('App\Resultados', 'idAsignacion', 'id')->with('traerPreguntas');
+        return $this->hasMany('App\Resultados', 'idAsignacion', 'id');
     }
 }
