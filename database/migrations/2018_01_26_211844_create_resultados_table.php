@@ -21,7 +21,7 @@ class CreateResultadosTable extends Migration
             $table->foreign('idPregunta')->references('id')->on('preguntas');
             $table->boolean('cumplimiento');
             $table->integer('observacionNumeral')->nullable();
-            $table->integer('observacionEscrita')->nullable();
+            $table->longText('observacionEscrita')->nullable();
             $table->longText('rutaObservacionDocumental')->nullable();
             $table->timestamps();
         });

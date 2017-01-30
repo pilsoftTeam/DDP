@@ -3,7 +3,7 @@
 
         <div class="row">
 
-            <h4 class="text-center">Oficinas pendientes para revision</h4>
+            <h4 class="text-center">Administración de Oficinas Licitadas</h4>
             <hr>
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
                 <h4 class="text-center">Regiones</h4>
@@ -76,7 +76,7 @@
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                             <div class="panel panel-default">
                                 <div class="panel-body dialogRow">
-                                    <h4 class="text-center">Tarea ya asignada</h4>
+                                    <h4 class="text-center">Oficina Licitada ya asignada</h4>
                                     <h6 class="text-center">Detalles</h6>
                                     <hr>
                                     <div class="row">
@@ -131,7 +131,7 @@
                                                             <span class="label label-success">{{a.created_at}}</span>
                                                         </h5>
                                                         <h5>Estado :
-                                                            <span class="label label-info">{{a.estado}}</span>
+                                                            <span class="label label-danger">{{a.estado}}</span>
                                                         </h5>
                                                     </div>
                                                 </a>
@@ -203,10 +203,6 @@
                 this.$http.get('/api/traer/oficinas').then((response) => {
                     this.oficinasPendientes = response.data;
                     let oficinas = response.data;
-                    //_.forEach(oficinas, (item) => {
-                    //    console.log(item);
-                    //    //item.get_asignaciones.length == 0 ? this.oficinasPendientes.push(item) : false;
-                    //});
                 }, (response) => {
                     this.error(response.status)
                 })

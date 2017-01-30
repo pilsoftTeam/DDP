@@ -55,5 +55,14 @@
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <img src="{{asset('/img/Logo_Fortunato.png')}}" class="img-responsive" style="margin: 0 auto"
+                     width="500" height="400">
+            </div>
+
+        </div>
+
     </div>
 @endsection

@@ -4,14 +4,12 @@
             <div class="row">
 
 
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="col-xs-18 col-sm-12 col-md-12 col-lg-12">
                     <transition name="custom" enter-active-class="animated fadeInUp"
                                 leave-active-class="animated fadeOut">
 
                         <div v-if="init">
-
-                            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
-                            <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                            <div class="col-xs-18 col-sm-12 col-md-12 col-lg-12">
 
                                 <div class="panel panel-default">
                                     <div class="panel-body">
@@ -20,36 +18,41 @@
 
 
                                         <hr>
-                                        <div v-for="item in data">
+                                        <div class="row">
+                                            <div v-for="item in data">
+                                                <div class="col-xs-18 col-sm-6 col-md-6 col-lg-6">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-body">
+                                                            <h4 class="text-center">
+                                                                {{item.get_oficinas_asignadas.get_comuna.nombreComuna}}</h4>
+                                                            <p class="text-center">
+                                                                <label class="label label-default">{{item.get_oficinas_asignadas.get_comuna.get_region.nombreRegion}}</label>
+                                                            </p>
+                                                            <hr>
+                                                            <div class="well">
+                                                                <p>Direccion :
+                                                                    {{item.get_oficinas_asignadas.direccion}}</p>
+                                                                <p>Fono : {{item.get_oficinas_asignadas.fono}}</p>
+                                                                <p>Zona : {{item.get_oficinas_asignadas.zona}}</p>
+                                                                <p>N° Llamado Zona interno :
+                                                                    {{item.get_oficinas_asignadas.numeroLlamadoInterno}}</p>
+                                                                <p>N° Zona licitación :
+                                                                    {{item.get_oficinas_asignadas.numeroZonaLicitacion}}</p>
+                                                            </div>
 
-                                            <div class="panel panel-info">
-                                                <div class="panel-heading">
-                                                    <h3 class="panel-title">Comuna :
-                                                        {{item.get_oficinas_asignadas.get_comuna.nombreComuna}}</h3>
-                                                </div>
-                                                <div class="panel-body">
-                                                    <h5>Tips y observaciones : </h5>
-                                                    <hr>
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab
-                                                        minus
-                                                        obcaecati
-                                                        perferendis sed. Ad at dignissimos eligendi fuga id maiores nam
-                                                        provident.
-                                                        Atque, blanditiis dolorum facere impedit quas quia ullam?</p>
 
-                                                    <button class="btn btn-success pull-right"
-                                                            @click="startRevision(item)">
-                                                        Empezar
-                                                    </button>
+                                                            <button class="btn btn-success pull-right"
+                                                                    @click="startRevision(item)">
+                                                                Empezar
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
-                            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
-
                         </div>
 
                     </transition>

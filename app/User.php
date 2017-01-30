@@ -37,6 +37,6 @@ class User extends Authenticatable
     }
 
     public function getAsignaciones(){
-        return $this->hasMany('App\Asignacion', 'idUsuarioAsignado', 'id');
+        return $this->hasMany('App\Asignacion', 'idUsuarioAsignado', 'id')->where('estado', '!=' ,'rechazado');
     }
 }

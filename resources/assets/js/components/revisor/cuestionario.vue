@@ -368,9 +368,18 @@
                 };
 
                 this.$http.post('/api/terminar/checklist', data).then((response) => {
-                    console.log(response.data)
+                    this.success();
                 }, (response) => {
                     console.log(response)
+                });
+            },
+
+            success(){
+                this.$alert('Revision terminada con exito. Ahora se la pagina se recargara para obtener la informacion', 'Exito', {
+                    confirmButtonText: 'OK',
+                    callback: action => {
+                        location.reload();
+                    }
                 });
             }
 

@@ -97,17 +97,16 @@
             <div class="row">
 
 
-                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
 
                     <el-upload
                             action="//jsonplaceholder.typicode.com/posts/"
                             :on-preview="handlePreview"
-                            :on-remove="handleRemove"
                             :default-file-list="fileList">
                     </el-upload>
                 </div>
                 <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
-                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                <div class="col-xs-7s col-sm-7s col-md-7s col-lg-7s">
 
                     <div class="panel panel-default">
                         <div class="panel-body">
@@ -115,6 +114,8 @@
                             <hr>
                             <img :src="selected.file" alt="" class="img img-rounded img-responsive"
                                  style="margin: 0 auto; max-height: 400px; max-width:400px">
+
+                            <button class="btn btn-success pull-right">Descargar este archivo</button>
                         </div>
                     </div>
 
@@ -124,7 +125,7 @@
 
             <span slot="footer" class="dialog-footer">
             <el-button @click="obsDialogVisible = false" type="">Cerrar</el-button>
-            <el-button type="primary">Opciones</el-button>
+            <el-button type="primary">Descargar todo como ZIP</el-button>
           </span>
         </el-dialog>
 
@@ -154,7 +155,9 @@
     </div>
 </template>
 <style>
-
+    span.el-upload__btn-delete {
+        display: none;
+    }
 </style>
 <script>
 
@@ -178,7 +181,8 @@
                 opcionesDialogVisible: false,
                 selected: {
                     file: '',
-                    name: ''
+                    name: '',
+                    url: ''
                 },
                 fileList: [],
                 observaciones: '',
@@ -247,13 +251,8 @@
                         collection.observacionEscrita = o.observacionEscrita;
                         collection.rutaObservacionDocumental = o.rutaObservacionDocumental
                     });
-
                     self.pregunta.push(collection);
                 });
-
-                //
-
-
             },
 
             getDocs(ruta){
@@ -288,6 +287,7 @@
             handlePreview(file){
                 this.selected.file = file.url;
                 this.selected.name = file.name;
+                this.selected.url = file.url + '.' + file.type;
             },
 
             openOpciones(opcion){
@@ -304,10 +304,26 @@
 
 
                 this.$http.post('/api/terminar/revision', data).then((response) => {
-                    console.log(response.data);
+                    this.opcionesDialogVisible = false;
+                    this.success();
+                }, (response) => {
+                    this.opcionesDialogVisible = false;
+                    this.error(response.status)
                 })
 
 
+            },
+            success(){
+                this.$notify.success({
+                    title: 'Exito',
+                    message: 'La accion ha culminado con exito.'
+                })
+            },
+            error(error){
+                this.$notify.error({
+                    title: 'Error',
+                    message: 'La accion ha terminado con un error : ' + error
+                })
             }
 
 

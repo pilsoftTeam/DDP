@@ -33,7 +33,7 @@ class RevisorController extends Controller
             $resultado->idPregunta = $item['idPregunta'];
             $resultado->cumplimiento = $item['opcion'];
             $resultado->observacionNumeral = empty($item['inputNumeral']) ? null : $item['inputNumeral'];
-            $resultado->observacionEscrita = empty($item['inputEscrito']) ? null : $item['inputNumeral'];
+            $resultado->observacionEscrita = empty($item['inputEscrito']) ? null : $item['inputEscrito'];
             $resultado->rutaObservacionDocumental = empty($item['rutaObservaciones']) ? null : $item['rutaObservaciones'];
             $resultado->save();
         }

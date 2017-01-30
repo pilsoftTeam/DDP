@@ -164,7 +164,8 @@
                                                             @click="editarPregunta(pregunta.id)">Editar
                                                     </button>
                                                     <button type="button" class="btn btn-xs btn-danger"
-                                                            @click="eliminarPregunta(pregunta.id)">Eliminar
+                                                            @click="showConfirmationEliminarPregunta(pregunta.id)">
+                                                        Eliminar
                                                     </button>
                                                 </div>
                                             </div>
@@ -338,6 +339,23 @@
             </el-dialog>
 
 
+            <el-dialog title="Confirmacion eliminar pregunta" v-model="eliminarPreguntaDialogVisible" size="tiny">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <h3 class="text-center text-danger">¿ Esta seguro de que desea eliminar esta pregunta ?</h3>
+                        <p> Al eliminar esta pregunta , todas las asignaciones que contenian esta se reestableceran a
+                            modo pendiente.
+                            Todos los resultados no guardados que contenian esta pregunta tambien se eliminaran.
+                        </p>
+                    </div>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">Cancelar</el-button>
+                <el-button type="danger" @click="eliminarPregunta">Confirmar</el-button>
+              </span>
+            </el-dialog>
+
+
             <div class="btn-group fixedbutton">
                 <button type="button" class="btn btn-success" @click="dimensionDialogVisible = true">
                     Dimension
@@ -505,6 +523,10 @@
                 showPreguntas: false,
                 editarRequisitoDialogVisible: false,
                 eliminarRequisitoDialogVisible: false,
+                eliminarPreguntaDialogVisible: false,
+
+
+                idEliminarPregunta: '',
             }
         },
 
@@ -643,8 +665,26 @@
             editarPregunta(id){
                 alert(id);
             },
-            eliminarPregunta(id){
-                alert('Va a eliminar a : ' + id + '. Esta seguro');
+            showConfirmationEliminarPregunta(id){
+
+                this.eliminarPreguntaDialogVisible = true
+                this.idEliminarPregunta = id;
+
+
+            },
+
+            eliminarPregunta(){
+
+                let id = this.idEliminarPregunta
+
+                this.$http.post('/api/eliminar/pregunta/' + id).then((response) => {
+                    this.success();
+                    console.log(response)
+                }, (response) => {
+                    this.error(response.status)
+                })
+
+
             },
 
 

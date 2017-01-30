@@ -39,6 +39,10 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/obtener/requisito/{id}', 'AdminController@getRequisito');
 
 
+    //Edicion Preguntas
+    Route::post('/eliminar/pregunta/{id}', 'AdminController@deletePregunta');
+
+
     //Usuarios
 
     Route::get('/obtener/usuarios', 'AdminController@getUsuarios');

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Asignacion;
 use App\Dimension;
 use App\Http\Requests\UserCreationRequest;
 use App\Perfilamiento;
 use App\Perfiles;
 use App\Pregunta;
 use App\Requisito;
+use App\Resultados;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -99,6 +101,12 @@ class AdminController extends Controller
 
     public function eliminarRequisito($id)
     {
+        $pregunta = Pregunta::where('idRequisito', $id)->value('id');
+        $idAsignacion = Resultados::where('idPregunta', $pregunta)->value('idAsignacion');
+
+
+        Resultados::where('idAsignacion', $idAsignacion)->delete();
+        Asignacion::where('id', $idAsignacion)->delete();
         Pregunta::where('idRequisito', $id)->delete();
         Requisito::destroy($id);
 
@@ -214,6 +222,20 @@ class AdminController extends Controller
         Perfilamiento::where('idUsuario', $request->id)->delete();
         User::destroy($request->id);
         return response()->json(200);
+    }
+
+    public function deletePregunta($id)
+    {
+        $idAsignacion = Resultados::where('idPregunta', $id)->value('idAsignacion');
+
+        Asignacion::where('id', $idAsignacion)->update([
+            'estado' => 'rechazado'
+        ]);
+
+        Resultados::where('idPregunta', $id)->delete();
+        Pregunta::where('id', $id)->delete();
+        return response()->json(200);
+
     }
 
 

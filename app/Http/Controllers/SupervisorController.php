@@ -25,8 +25,6 @@ class SupervisorController extends Controller
     public function getOficinas()
     {
         $oficinasRegiones = Regiones::with('getComunas')->get();
-
-        //$oficinas = Oficinas::with('getAsignaciones')->get();
         return response()->json($oficinasRegiones, 200);
     }
 
@@ -45,7 +43,7 @@ class SupervisorController extends Controller
 
     public function getAsignaciones()
     {
-        $asignaciones = Asignacion::with('getOficinasAsignadas', 'getCreador', 'getRealizador', 'getCuestionarioRealizado')->get();
+        $asignaciones = Asignacion::where('estado', '!=', 'rechazado')->with('getOficinasAsignadas', 'getCreador', 'getRealizador', 'getCuestionarioRealizado')->get();
         return response()->json($asignaciones);
     }
 
