@@ -32,7 +32,6 @@ class RevisorController extends Controller
         $idAsignacion = $request->oficina['id'];
         $idSupervisor = $request->oficina['idUsuarioAsignador'];
 
-
         foreach ($request->preguntas as $item) {
             $resultado = new Resultados();
             $resultado->idAsignacion = $idAsignacion;
@@ -47,7 +46,6 @@ class RevisorController extends Controller
                 'estado' => 'revisado'
             ]);
         }
-
 
 
         Event::fire(new SendMail($idSupervisor, $request->all()));

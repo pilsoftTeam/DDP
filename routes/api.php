@@ -82,4 +82,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/terminar/checklist', 'RevisorController@terminar');
 
 
+    Route::get('/reportes/all', 'SupervisorController@getDataForReportes');
+    Route::post('/reportes/docs/{id}', 'SupervisorController@getReportesDocs');
+
+
 });

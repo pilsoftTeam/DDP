@@ -56,8 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => 'fortunato@dpp.cl',
-        'name' => 'Notificacion',
+        'address' => 'auditores@fortunato.cl',
+        'name' => 'Notificacion de cierre de formulario',
     ],
 
     /*

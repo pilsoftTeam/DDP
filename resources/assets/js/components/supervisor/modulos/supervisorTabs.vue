@@ -19,6 +19,13 @@
                             </span>
                             <estadoAsignaciones></estadoAsignaciones>
                         </el-tab-pane>
+
+                        <el-tab-pane>
+                            <span slot="label"> <icon name="file-o"></icon>
+                                Reportes
+                            </span>
+                            <reportes></reportes>
+                        </el-tab-pane>
                     </el-tabs>
                 </div>
             </div>
@@ -33,18 +40,18 @@
     import Icon from 'vue-awesome/components/Icon.vue'
     import asignarTareas from './asignarTareaRevisor.vue'
     import verEstadoAsignaciones from './verEstadoAsignaciones.vue'
+    import reportes from './reportes.vue'
 
     import 'vue-awesome/icons/'
     export default{
         data(){
-            return {
-                msg: 'hello vue'
-            }
+            return {}
         },
         components: {
             'icon': Icon,
             'asignarTareasRevisor': asignarTareas,
-            'estadoAsignaciones': verEstadoAsignaciones
+            'estadoAsignaciones': verEstadoAsignaciones,
+            'reportes': reportes
         }
     }
 </script>

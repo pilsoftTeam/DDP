@@ -63,6 +63,32 @@
             </div>
 
         </div>
+        <div class="row">
+            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+            <div class="col-xs-18 col-sm-10 col-md-10 col-lg-10">
+                <div class="alert alert-default" style="border: 1px solid #D3E0E9">
+                    <h4><strong style="color :red;"> Importante:</strong></h4>
+                    <p style="font-size: 14pt">Para efectos de recepción de correos electrónicos, producto de la
+                        finalización de la revisión de un
+                        formulario o checklist por parte de un auditor en terreno, es necesario que la cuenta de usuario
+                        del sistema
+                        sea creado utilizando un nombre de casilla <b>“válido”</b> Ej. lfloresb@fortunato.cl.
+                    </p>
+                    <hr>
+                    <p style="font-size: 14pt">
+                        Lo anterior es muy importante, considerando que el sistema enviará un correo automático a ésta
+                        casilla
+                        notificando sobre la finalización de una revisión en terreno.
+                        El correo remitente designado para esta demo es auditores@fortunato.cl-
+                        <b>Para crear la cuenta de usuario recuerde utilizar la cuenta admin@sistema.cl</b>
+                    </p>
+
+
+                </div>
+            </div>
+            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
+        </div>
+
 
     </div>
 @endsection

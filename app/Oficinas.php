@@ -11,10 +11,16 @@ class Oficinas extends Model
 
     public function getAsignaciones()
     {
-        return $this->hasMany('App\Asignacion', 'idOficinaAsignada', 'id')->where('estado', '!=' ,'rechazado')->with('getCreador', 'getRealizador');
+        return $this->hasMany('App\Asignacion', 'idOficinaAsignada', 'id')->where('estado', '!=', 'rechazado')->with('getCreador', 'getRealizador');
     }
 
-    public function getComuna(){
+    public function getReportesAsignaciones()
+    {
+        return $this->hasMany('App\Asignacion', 'idOficinaAsignada', 'id')->with('getCreador', 'getCuestionarioRealizado', 'getRealizador');
+    }
+
+    public function getComuna()
+    {
         return $this->belongsTo('App\Comunas', 'idComuna', 'id')->with('getRegion');
     }
 }

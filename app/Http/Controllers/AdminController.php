@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Asignacion;
 use App\Dimension;
 use App\Http\Requests\UserCreationRequest;
+use App\Oficinas;
 use App\Perfilamiento;
 use App\Perfiles;
 use App\Pregunta;
@@ -267,6 +268,8 @@ class AdminController extends Controller
 
         return response()->json(200);
     }
+
+
 
 
 }

@@ -14,6 +14,7 @@
                         <usuarios></usuarios>
                     </div>
                 </el-tab-pane>
+
             </el-tabs>
 
         </div>
@@ -40,7 +41,7 @@
         data() {
             return {
                 showCuestionarios: true,
-                showUsuarios: false
+                showUsuarios: false,
             }
         },
 

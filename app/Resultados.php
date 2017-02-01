@@ -13,4 +13,9 @@ class Resultados extends Model
     {
         return $this->belongsTo('App\Pregunta', 'idPregunta', 'id')->with('obtenerRequisitos');
     }
+
+    public function getPreguntas()
+    {
+        return $this->belongsTo('App\Pregunta', 'idPregunta', 'id');
+    }
 }

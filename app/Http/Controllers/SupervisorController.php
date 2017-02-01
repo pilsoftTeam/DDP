@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Asignacion;
+use App\Comunas;
 use App\Dimension;
+use App\Oficinas;
 use App\Perfilamiento;
 use App\Regiones;
+use App\Resultados;
+use Carbon\Carbon;
 use Chumper\Zipper\Facades\Zipper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class SupervisorController extends Controller
@@ -87,6 +92,49 @@ class SupervisorController extends Controller
 
 
         return response()->json(200);
+    }
+
+    public function getDataForReportes()
+    {
+        $data = Oficinas::with('getComuna', 'getReportesAsignaciones')->get();
+        return response()->json($data, 200);
+    }
+
+    public function getReportesDocs($id)
+    {
+
+        $preguntas = Resultados::where('idAsignacion', $id)->with('traerPreguntas')->get();
+        $idOficina = Asignacion::where('id', $id)->value('idOficinaAsignada');
+        $idComuna = Oficinas::where('id', $idOficina)->value('idComuna');
+        $comuna = Comunas::where('id', $idComuna)->value('nombreComuna');
+        $idRegion = Comunas::where('id', $idComuna)->value('idRegion');
+        $region = Regiones::where('id', $idRegion)->value('nombreRegion');
+
+
+        Excel::create('Revision_' . $comuna . '_' . $region . '_' . Carbon::now(), function ($excel) use ($preguntas) {
+
+            // Set the title
+            $excel->setTitle(Carbon::now());
+            $excel->sheet('Revision', function ($sheet) use ($preguntas) {
+
+                $sheet->row(1, array(
+                    'Preguntas', 'Cumplimiento', 'requisito', 'Dimension',
+                ));
+                foreach ($preguntas as $key => $value) {
+                    $index = $key + 3;
+                    $sheet->row($index, [
+                        $value->getPreguntas['pregunta'],
+                        $value->cumplimiento == 1 ? 'Cumple' : 'No cumple',
+                        $value->getPreguntas->obtenerRequisitos['nombreRequisito'],
+                        $value->getPreguntas->obtenerRequisitos->obtenerDimensiones['dimension'],
+                    ]);
+                    $index + 2;
+                }
+
+            });
+
+        })->download('xlsx');
+
     }
 
 
