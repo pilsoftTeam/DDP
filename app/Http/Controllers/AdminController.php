@@ -35,6 +35,14 @@ class AdminController extends Controller
         return response()->json($dimensiones, 200);
     }
 
+    public function rejectedLoad($id)
+    {
+        $rejectedload = Resultados::where('idAsignacion', $id)->with('traerPreguntas')->get();
+
+
+        return response()->json($rejectedload, 200);
+    }
+
     /**
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -122,7 +130,6 @@ class AdminController extends Controller
 
         $ordenPregunta = Pregunta::orderBy('created_at', 'desc')->value('ordenPreguntas');
         $pregunta = new Pregunta();
-
         if (!$ordenPregunta) {
             $pregunta->idRequisito = $request->idRequisito;
             $pregunta->ordenPreguntas = 1;
@@ -160,6 +167,13 @@ class AdminController extends Controller
         return response()->json($preguntas, 200);
     }
 
+    public function getPreguntasById($id)
+    {
+        $preguntas = Pregunta::where('id', $id)->with('obtenerRequisitos')->get();
+
+        return response()->json($preguntas);
+    }
+
     public function getRequisito($id)
     {
         $requisito = Requisito::where('id', $id)->get();
@@ -170,7 +184,7 @@ class AdminController extends Controller
 
     public function getUsuarios()
     {
-        $usuarios = User::where('id', '!=', Auth::user()->id)->with('getPerfil')->get();
+        $usuarios = User::where('id', '!=', Auth::user()->id)->where('estado', '!=', 0)->with('getPerfil')->get();
 
         return response()->json($usuarios);
 
@@ -193,6 +207,7 @@ class AdminController extends Controller
         $user->name = $request->nombre;
         $user->email = $request->email;
         $user->password = bcrypt($password);
+        $user->estado = true;
         $user->save();
 
         $perfilamiento->idPerfil = $request->rol;
@@ -219,8 +234,9 @@ class AdminController extends Controller
 
     public function deleteUser(Request $request)
     {
-        Perfilamiento::where('idUsuario', $request->id)->delete();
-        User::destroy($request->id);
+        User::where('id', $request->id)->update([
+            'estado' => false
+        ]);
         return response()->json(200);
     }
 
@@ -236,6 +252,20 @@ class AdminController extends Controller
         Pregunta::where('id', $id)->delete();
         return response()->json(200);
 
+    }
+
+    public function editPregunta(Request $request)
+    {
+        Pregunta::where('id', $request->id)->update([
+            'pregunta' => $request->pregunta,
+            'idRequisito' => $request->idRequisito,
+            'tecnicaAuditoria' => $request->tecnicaAuditoria,
+            'escrita' => $request->escrita,
+            'numeral' => $request->numeral,
+            'documental' => $request->documental,
+        ]);
+
+        return response()->json(200);
     }
 
 

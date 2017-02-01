@@ -20,6 +20,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     Route::get('/carga/inicial', 'AdminController@initLoad');
+    Route::get('/carga/rechazada/inicial/{id}', 'AdminController@rejectedLoad');
 
 
     //Crear dimensiones
@@ -36,10 +37,12 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     //Traer Preguntas
     Route::get('/obtener/preguntas/{id}', 'AdminController@getPreguntas');
+    Route::get('/obtener/preguntas/by/{id}', 'AdminController@getPreguntasById');
     Route::get('/obtener/requisito/{id}', 'AdminController@getRequisito');
 
 
     //Edicion Preguntas
+    Route::post('/editar/pregunta', 'AdminController@editPregunta');
     Route::post('/eliminar/pregunta/{id}', 'AdminController@deletePregunta');
 
 

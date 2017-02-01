@@ -201,14 +201,14 @@
         methods: {
 
             init(){
-                this.$http.get('/api/obtener/usuarios').then((response) => {
+                this.$http.get('api/obtener/usuarios').then((response) => {
                     this.users = response.data
                 }, (response) => {
                     this.error(response.status);
                 })
             },
             getRoles(){
-                this.$http.get('/api/obtener/roles/').then((response) => {
+                this.$http.get('api/obtener/roles').then((response) => {
                     this.roles = response.data
                 }, (response) => {
 
@@ -219,7 +219,7 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         let user = this.editUsers;
-                        this.$http.post('/api/editar/usuario', user).then((response) => {
+                        this.$http.post('api/editar/usuario', user).then((response) => {
                             this.crearUser.nombre = '';
                             this.crearUser.email = '';
                             this.crearUser.rol = '';
@@ -240,7 +240,7 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         let user = this.crearUser;
-                        this.$http.post('/api/crear/usuario', user).then((response) => {
+                        this.$http.post('api/crear/usuario', user).then((response) => {
                             this.crearUser.nombre = '';
                             this.crearUser.email = '';
                             this.crearUser.rol = '';
@@ -262,7 +262,7 @@
                     id: this.deleteUser.id
                 };
 
-                this.$http.post('/api/borrar/usuario', user).then((response) => {
+                this.$http.post('api/borrar/usuario', user).then((response) => {
                     this.init();
                     this.deleteDialogVisible = false;
                     this.success();

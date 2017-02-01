@@ -59,6 +59,7 @@
                                     <div style="display: inline">
                                         <p class="text-center">Cambiar estado de dimension : <span>
                                             <el-switch
+                                                    disabled
                                                     :width="Number(120)"
                                                     v-model="editarDimension.estado"
                                                     on-text="Activado"
@@ -161,7 +162,7 @@
                                             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                                                 <div class="btn-group pull-right">
                                                     <button type="button" class="btn btn-xs btn-warning"
-                                                            @click="editarPregunta(pregunta.id)">Editar
+                                                            @click="editarPreguntaSeleccionada(pregunta.id)">Editar p
                                                     </button>
                                                     <button type="button" class="btn btn-xs btn-danger"
                                                             @click="showConfirmationEliminarPregunta(pregunta.id)">
@@ -222,6 +223,75 @@
                     <el-form-item>
                         <el-button type="primary" @click="requisitoSubmit('requisitos')"
                                    class="pull-right">Agregar
+                        </el-button>
+                    </el-form-item>
+                </el-form>
+            </el-dialog>
+
+
+            <el-dialog title="Editar pregunta" v-model="editarPreguntasDialogVisible" size="large">
+                <el-form :model="pregunta" class="" :rules="rules" ref="preguntas">
+
+
+                    <el-form-item label="Nombre de la pregunta" prop="pregunta">
+                        <el-input v-model="editarPregunta.pregunta"></el-input>
+                    </el-form-item>
+
+
+                    <el-form-item label="Nombre del requisito" prop="idRequisito">
+                        <el-select v-model="editarPregunta.idRequisito" placeholder="Elija una"
+                                   style="width: 100%">
+                            <el-option
+                                    v-for="item in dataRequisitos"
+                                    :label="item.nombreRequisito"
+                                    :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="Técnica de Auditoría" prop="tecnicaAuditoria">
+                        <el-select v-model="editarPregunta.tecnicaAuditoria" placeholder="Elija una"
+                                   style="width: 100%">
+                            <el-option
+                                    v-for="item in tecnicasAuditoria"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <el-alert
+                            title="Informacion"
+                            type="info"
+                            description="Al elegir una de estas opciones usted otorgara a la pregunta una revision. Elija cuidadosamente"
+                            show-icon
+                            @close="showDocumentalHeader = true">
+                    </el-alert>
+                    <div v-if="showDocumentalHeader">
+                        <hr>
+                        <h5>
+                            <b>Tipos de observacion a agregar</b>
+                        </h5>
+                    </div>
+
+                    <br>
+
+                    <el-form-item label="Observacion Numeral">
+                        <el-switch on-text="SI" off-text="NO"
+                                   v-model="editarPregunta.numeral"></el-switch>
+                    </el-form-item>
+
+                    <el-form-item label="Observacion Escrita">
+                        <el-switch on-text="SI" off-text="NO"
+                                   v-model="editarPregunta.escrita"></el-switch>
+                    </el-form-item>
+
+                    <el-form-item label="Observacion Documental">
+                        <el-switch on-text="SI" off-text="NO"
+                                   v-model="editarPregunta.documental"></el-switch>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="editPreguntaSubmit('preguntas')"
+                                   class="pull-right">Editar
                         </el-button>
                     </el-form-item>
                 </el-form>
@@ -337,8 +407,6 @@
                     </div>
                 </div>
             </el-dialog>
-
-
             <el-dialog title="Confirmacion eliminar pregunta" v-model="eliminarPreguntaDialogVisible" size="tiny">
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -426,6 +494,16 @@
                     documental: false,
 
                 },
+                editarPregunta: {
+                    id: '',
+                    pregunta: '',
+                    idRequisito: '',
+                    tecnicaAuditoria: '',
+                    numeral: '',
+                    escrita: '',
+                    documental: '',
+
+                },
 
 
                 editarRequisito: {
@@ -511,7 +589,7 @@
                 },
 
                 editarDimension: {
-                    estado: false
+                    estado: true
                 },
 
 
@@ -525,15 +603,14 @@
                 eliminarRequisitoDialogVisible: false,
                 eliminarPreguntaDialogVisible: false,
 
-
-                idEliminarPregunta: '',
+                editarPreguntasDialogVisible: false
             }
         },
 
         methods: {
 
             initLoad(){
-                this.$http.get('/api/carga/inicial').then((response) => {
+                this.$http.get('api/carga/inicial').then((response) => {
                     let data = response.data;
                     this.data = data;
 
@@ -548,12 +625,11 @@
 
                 })
             },
-
             dimensionSubmit(formName){
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         let data = this.dimension;
-                        this.$http.post('/api/crear/dimension', data).then((response) => {
+                        this.$http.post('api/crear/dimension', data).then((response) => {
                             this.success();
                             this.dimension.nombreDimension = '';
                             this.dimensionDialogVisible = false;
@@ -570,7 +646,7 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         let data = this.requisitos;
-                        this.$http.post('/api/crear/requisito', data).then((response) => {
+                        this.$http.post('api/crear/requisito', data).then((response) => {
                             this.success();
                             this.requisitos.idDimension = '';
                             this.requisitos.nombreRequisito = '';
@@ -588,7 +664,7 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         let data = this.pregunta;
-                        this.$http.post('/api/crear/pregunta', data).then((response) => {
+                        this.$http.post('api/crear/pregunta', data).then((response) => {
                             this.pregunta.pregunta = '';
                             this.pregunta.idRequisito = '';
                             this.pregunta.escrita = false;
@@ -615,7 +691,7 @@
             editarRequisitos(id){
                 this.editarRequisitoDialogVisible = true;
 
-                this.$http.get('/api/obtener/requisito/' + id).then((response) => {
+                this.$http.get('api/obtener/requisito/' + id).then((response) => {
                     this.editarRequisito.idRequisito = response.data[0].id;
                     this.editarRequisito.idDimension = response.data[0].idDimension;
                     this.editarRequisito.nombreRequisito = response.data[0].nombreRequisito;
@@ -628,7 +704,7 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         let data = this.editarRequisito;
-                        this.$http.post('/api/editar/requisito', data).then((response) => {
+                        this.$http.post('api/editar/requisito', data).then((response) => {
                             this.success();
                             this.editarRequisito.idRequisito = '';
                             this.editarRequisito.idDimension = '';
@@ -644,15 +720,13 @@
                     }
                 })
             },
-
             eliminarRequisitos(id){
                 this.idEliminarRequisito = id;
                 this.eliminarRequisitoDialogVisible = true
             },
-
             requisitoDelete(){
                 let id = this.idEliminarRequisito;
-                this.$http.delete('/api/eliminar/requisito/' + id).then((response) => {
+                this.$http.delete('api/eliminar/requisito/' + id).then((response) => {
                     this.eliminarRequisitoDialogVisible = false
                     this.success();
                     this.initLoad();
@@ -660,11 +734,36 @@
                     this.error(response.status)
                 })
             },
+            editarPreguntaSeleccionada(id){
+                this.$http.get('api/obtener/preguntas/by/' + id + '').then((response) => {
+                    this.editarPregunta.id = response.data[0].id;
+                    this.editarPregunta.pregunta = response.data[0].pregunta;
+                    this.editarPregunta.idRequisito = response.data[0].idRequisito;
+                    this.editarPregunta.tecnicaAuditoria = response.data[0].tecnicaAuditoria;
+                    this.editarPregunta.numeral = response.data[0].numeral == 1;
+                    this.editarPregunta.escrita = response.data[0].escrita == 1;
+                    this.editarPregunta.documental = response.data[0].documental == 1;
+                    this.editarPreguntasDialogVisible = true;
 
 
-            editarPregunta(id){
-                alert(id);
+                }, (response) => {
+                    console.log(response.status)
+                })
             },
+
+
+            editPreguntaSubmit(formName){
+                let data = this.editarPregunta;
+                this.$http.post('api/editar/pregunta', data).then((response) => {
+                    this.editarPreguntasDialogVisible = false;
+                    this.success();
+                    this.initLoad();
+                }, (response) => {
+                    this.error(response.status);
+                });
+            },
+
+
             showConfirmationEliminarPregunta(id){
 
                 this.eliminarPreguntaDialogVisible = true
@@ -672,21 +771,19 @@
 
 
             },
-
             eliminarPregunta(){
 
                 let id = this.idEliminarPregunta
 
-                this.$http.post('/api/eliminar/pregunta/' + id).then((response) => {
+                this.$http.post('api/eliminar/pregunta/' + id).then((response) => {
+                    this.eliminarPreguntaDialogVisible = false
                     this.success();
-                    console.log(response)
                 }, (response) => {
                     this.error(response.status)
                 })
 
 
             },
-
 
             create(){
 
@@ -716,7 +813,7 @@
 
 
             getPreguntas(id){
-                this.$http.get('/api/obtener/preguntas/' + id + '').then((response) => {
+                this.$http.get('api/obtener/preguntas/' + id + '').then((response) => {
                     let data = response.data;
                     let self = this;
                     this.dataPreguntas.data = data;

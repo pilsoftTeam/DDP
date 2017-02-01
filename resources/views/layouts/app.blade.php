@@ -12,8 +12,8 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
-    <link href="/css/app.css" rel="stylesheet">
-    <link href="/css/all.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
+    <link href="css/all.css" rel="stylesheet">
 
     <!-- Scripts -->
     <script>
@@ -87,6 +87,6 @@
 </div>
 
 <!-- Scripts -->
-<script src="/js/app.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>

@@ -15,7 +15,8 @@ class UsersTableSeeder extends Seeder
         DB::table('usuarios')->insert([
             'name' => 'Admin',
             'email' => 'admin@sistema.cl',
-            'password' => bcrypt('admin')
+            'password' => bcrypt('admin'),
+            'estado' => true
         ]);
 
         DB::table('perfilamientos')->insert([
@@ -25,7 +26,8 @@ class UsersTableSeeder extends Seeder
         DB::table('usuarios')->insert([
             'name' => 'supervisor',
             'email' => 'supervisor@sistema.cl',
-            'password' => bcrypt('supervisor')
+            'password' => bcrypt('supervisor'),
+            'estado' => true
         ]);
 
         DB::table('perfilamientos')->insert([
@@ -35,7 +37,8 @@ class UsersTableSeeder extends Seeder
         DB::table('usuarios')->insert([
             'name' => 'revisor',
             'email' => 'revisor@sistema.cl',
-            'password' => bcrypt('revisor')
+            'password' => bcrypt('revisor'),
+            'estado' => true
         ]);
 
         DB::table('perfilamientos')->insert([

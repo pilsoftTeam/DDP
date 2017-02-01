@@ -193,14 +193,14 @@
         methods: {
 
             getRevisores(){
-                this.$http.get('/api/traer/revisores').then((response) => {
+                this.$http.get('api/traer/revisores').then((response) => {
                     this.revisores = response.data
                 }, (response) => {
                     this.error(response.status)
                 })
             },
             getOficinas(){
-                this.$http.get('/api/traer/oficinas').then((response) => {
+                this.$http.get('api/traer/oficinas').then((response) => {
                     this.oficinasPendientes = response.data;
                     let oficinas = response.data;
                 }, (response) => {
@@ -227,7 +227,7 @@
 
             crearAsignacion(){
                 let data = this.asignar;
-                this.$http.post('/api/crear/asignacion', data).then((response) => {
+                this.$http.post('api/crear/asignacion', data).then((response) => {
                     this.oficinasPendientes.length = 0;
                     this.mostrarInformacion = false;
                     this.getOficinas();

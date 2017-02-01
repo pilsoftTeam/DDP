@@ -79,7 +79,7 @@ class SupervisorController extends Controller
             ]);
         } else {
             Asignacion::where('id', $request->idAsignacion)->update([
-                'estado' => 'pendiente',
+                'estado' => 'rechazado',
                 'idSupervisorRevisor' => Auth::user()->id,
                 'observaciones' => $request->observacion
             ]);

@@ -1,6 +1,7 @@
 <template>
     <div>
         <div class="container">
+
             <div class="row" v-for="item in dimensiones">
                 <div v-if="item.estado">
                     <div class="row">
@@ -91,7 +92,7 @@
 
                                                                             <el-upload
                                                                                     class="centerable center center-block"
-                                                                                    action="//localhost/api/recibir/archivos"
+                                                                                    action="//localhost/DDP/public/api/recibir/archivos"
                                                                                     name="documentos"
                                                                                     type="drag"
                                                                                     :data="subirArchivo"
@@ -177,11 +178,18 @@
 
         mounted(){
             this.initialization();
+
+
+            if (this.datosRevision.estado === 'rechazado') {
+                this.rejectedInitialization();
+            }
+
         },
 
         data () {
             return {
                 data: '',
+                rejectedData: '',
                 dimensiones: [],
                 preguntas: [],
                 filelist: [],
@@ -210,6 +218,7 @@
                 divisionLoaded: false,
                 observacionDialogVisible: false,
                 showTerminarButton: false,
+                rejectedCondition: false,
                 collapse: ''
             }
         },
@@ -217,6 +226,7 @@
         methods: {
 
             initialization(){
+
                 this.$http.get('api/carga/inicial').then((response) => {
                     this.data = response.data;
                     let data = response.data;
@@ -228,6 +238,17 @@
                         };
                         self.dimensiones.push(obj);
                     })
+                }, (response) => {
+                    console.log(response.status)
+                });
+            },
+
+            rejectedInitialization(){
+                let id = this.datosRevision.id;
+
+                this.$http.get('api/carga/rechazada/inicial/' + id + '').then((response) => {
+                    this.rejectedData = response.data;
+                    this.rejectedCondition = true;
                 }, (response) => {
                     console.log(response.status)
                 });
@@ -282,14 +303,34 @@
                         rutaObservaciones: '',
                         fileList: []
                     };
-                    pregunta.idPregunta = i.id;
-                    pregunta.idRequisito = i.idRequisito;
-                    pregunta.pregunta = i.pregunta;
-                    pregunta.numeral = i.numeral == 1;
-                    pregunta.escrita = i.escrita == 1;
-                    pregunta.documental = i.documental == 1;
-                    pregunta.tecnicaAuditoria = i.tecnicaAuditoria;
-                    self.preguntas.push(pregunta);
+
+                    if (this.rejectedCondition === true) {
+                        _.forEach(self.rejectedData, (r) => {
+                            pregunta.opcion = r.cumplimiento;
+                            pregunta.idPregunta = r.idPregunta;
+                            pregunta.idRequisito = r.traer_preguntas.idRequisito;
+                            pregunta.pregunta = r.traer_preguntas.pregunta;
+                            pregunta.numeral = r.traer_preguntas.numeral == 1;
+                            pregunta.escrita = r.traer_preguntas.escrita == 1;
+                            pregunta.documental = r.traer_preguntas.documental == 1;
+                            pregunta.inputNumeral = r.observacionNumeral == null ? 0 : r.observacionNumeral;
+                            pregunta.inputEscrito = r.observacionEscrita == null ? '' : r.observacionEscrita;
+                            pregunta.rutaObservaciones = r.rutaObservacionDocumental == null ? '' : r.rutaObservacionDocumental;
+                            pregunta.tecnicaAuditoria = r.traer_preguntas.tecnicaAuditoria;
+                            self.preguntas.push(pregunta);
+                        })
+                    } else {
+                        pregunta.idPregunta = i.id;
+                        pregunta.idRequisito = i.idRequisito;
+                        pregunta.pregunta = i.pregunta;
+                        pregunta.numeral = i.numeral == 1;
+                        pregunta.escrita = i.escrita == 1;
+                        pregunta.documental = i.documental == 1;
+                        pregunta.tecnicaAuditoria = i.tecnicaAuditoria;
+                        self.preguntas.push(pregunta);
+                    }
+
+
                 });
 
 
@@ -367,7 +408,7 @@
                     oficina: this.datosRevision,
                 };
 
-                this.$http.post('/api/terminar/checklist', data).then((response) => {
+                this.$http.post('api/terminar/checklist', data).then((response) => {
                     this.success();
                 }, (response) => {
                     console.log(response)

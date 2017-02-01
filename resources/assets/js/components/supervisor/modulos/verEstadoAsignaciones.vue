@@ -193,7 +193,7 @@
 
         methods: {
             getRevisadas(){
-                this.$http.get('/api/asignaciones/revisadas').then((response) => {
+                this.$http.get('api/asignaciones/revisadas').then((response) => {
                     this.dataRevisiones = response.data[0];
                     this.dataDimensiones = response.data[1];
                 }, (response) => {
@@ -262,7 +262,7 @@
                     ruta: ruta
                 };
 
-                this.$http.post('/api/traer/docs', rutaDocs).then((response) => {
+                this.$http.post('api/traer/docs', rutaDocs).then((response) => {
                     jszip.loadAsync(response.data).then((zip) => {
                         _.forEach(zip, (item) => {
                             _.forEach(item, (a) => {
@@ -303,7 +303,7 @@
                 };
 
 
-                this.$http.post('/api/terminar/revision', data).then((response) => {
+                this.$http.post('api/terminar/revision', data).then((response) => {
                     this.opcionesDialogVisible = false;
                     this.success();
                 }, (response) => {
